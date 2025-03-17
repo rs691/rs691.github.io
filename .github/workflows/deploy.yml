@@ -28,4 +28,4 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist # Vite builds to the dist folder by default
-          branch: gh-pages
+          branch: gh-pages # The branch to deploy to

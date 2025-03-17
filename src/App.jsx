@@ -17,10 +17,10 @@ function App() {
 			<a rel="noopener noreferrer" href="#self" className="block h-6 text-2xl font-semibold">Robert Stewart</a>
 			<div className="flex items-center">
 				<div className="hidden space-x-2 font-medium sm:block">
-					<a rel="noopener noreferrer" href="#" className="p-1">Blog</a>
-					<a rel="noopener noreferrer" href="#" className="p-1">Tags</a>
+					<a rel="noopener noreferrer" href="#about" className="p-1">About</a>
+					<a rel="noopener noreferrer" href="#timeline" className="p-1">Timeline</a>
 					<a rel="noopener noreferrer" href="#" className="p-1">Projects</a>
-					<a rel="noopener noreferrer" href="#" className="p-1">About</a>
+					<a rel="noopener noreferrer" href="#contact" className="p-1">Contact</a>
 				</div>
     
 				<button aria-label="Toggle Dark Mode" type="button" className="w-8 h-8 p-1 ml-1 mr-1 rounded sm:ml-4">
@@ -58,74 +58,27 @@ function App() {
 			</div>
 		</header>
 		<main className="container flex-1 max-w-3xl px-6 mx-auto space-y-12 xl:max-w-5xl">
-			<div className="space-y-6">
-				<h2 className="text-3xl font-extrabold text-gray-50 dark:text-gray-900">Recent blog posts</h2>
-				<ul className="space-y-8 xl:space-y-10">
-					<li>
-						<article>
-							<dl>
-								<dt className="sr-only">Published on</dt>
-								<dd className="text-xs text-gray-400 dark:text-gray-600">
-									<time dateTime="2021-01-12">January 12, 2021</time>
-								</dd>
-							</dl>
-							<div className="space-y-1">
-								<h3 className="text-2xl font-bold tracking-tight">
-									<a rel="noopener noreferrer" href="#" className="text-gray-50 dark:text-gray-900">Hendrerit vulputate eu quo.</a>
-								</h3>
-								<p className="max-w-full text-gray-100 dark:text-gray-800 prose prose-invert">Qui ei agam assum vivendum, ad nostro mediocrem sit, erant sanctus maiestatis vel no. Reque periculis usu at, id mel dicam impetus aliquip. At discere feugiat qui, meliore lucilius persecuti ut pri, vivendo corpora ne sit.</p>
-								<div className="flex flex-wrap space-x-3">
-									<a rel="noopener noreferrer" href="#" className="text-xs text-violet-400 dark:text-violet-600">#angular</a>
-									<a rel="noopener noreferrer" href="#" className="text-xs text-violet-400 dark:text-violet-600">#tailwind</a>
-									<a rel="noopener noreferrer" href="#" className="text-xs text-violet-400 dark:text-violet-600">#webdev</a>
-								</div>
-							</div>
-						</article>
-					</li>
-					<li>
-						<article>
-							<dl>
-								<dt className="sr-only">Published on</dt>
-								<dd className="text-xs text-gray-400 dark:text-gray-600">
-									<time dateTime="2021-01-12">January 12, 2021</time>
-								</dd>
-							</dl>
-							<div className="space-y-1">
-								<h3 className="text-2xl font-bold tracking-tight">
-									<a rel="noopener noreferrer" href="#" className="text-gray-50 dark:text-gray-900"> Vis te oporteat deterruisset.</a>
-								</h3>
-								<p className="max-w-full text-gray-100 dark:text-gray-800 prose prose-invert"> Vero facete sea ne. Ludus saperet scriptorem no usu. Legere intellegam delicatissimi te sit. Vis te oporteat deterruisset.</p>
-								<div className="flex flex-wrap space-x-3">
-									<a rel="noopener noreferrer" href="#" className="text-xs text-violet-400 dark:text-violet-600">#angular</a>
-									<a rel="noopener noreferrer" href="#" className="text-xs text-violet-400 dark:text-violet-600">#tailwind</a>
-									<a rel="noopener noreferrer" href="#" className="text-xs text-violet-400 dark:text-violet-600">#webdev</a>
-								</div>
-							</div>
-						</article>
-					</li>
-					<li>
-						<article>
-							<dl>
-								<dt className="sr-only">Published on</dt>
-								<dd className="text-xs text-gray-400 dark:text-gray-600">
-									<time dateTime="2021-01-12">January 12, 2021</time>
-								</dd>
-							</dl>
-							<div className="space-y-1">
-								<h3 className="text-2xl font-bold tracking-tight">
-									<a rel="noopener noreferrer" href="#" className="text-gray-50 dark:text-gray-900">Mentitum apeirian vim ne, usu illud ridens cu.</a>
-								</h3>
-								<p className="max-w-full text-gray-100 dark:text-gray-800 prose prose-invert">Duo ei paulo decore periculis, sed ex hinc inermis vivendo, meis feugait no mea. Pri magna commodo urbanitas cu, id eos lorem inimicus prodesset. Cu qui vidisse epicurei accusamus.</p>
-								<div className="flex flex-wrap space-x-3">
-									<a rel="noopener noreferrer" href="#" className="text-xs text-violet-400 dark:text-violet-600">#angular</a>
-									<a rel="noopener noreferrer" href="#" className="text-xs text-violet-400 dark:text-violet-600">#tailwind</a>
-									<a rel="noopener noreferrer" href="#" className="text-xs text-violet-400 dark:text-violet-600">#webdev</a>
-								</div>
-							</div>
-						</article>
-					</li>
-				</ul>
-			</div>
+    <div className="mx-auto max-w-md overflow-hidden md:max-w-2xl">
+            <div className="md:flex">
+              <div className="md:shrink-0">
+                <img
+                  className="h-48 w-full object-cover md:h-full md:w-48 rounded-b-3xl"
+                  src="../public/me.svg"
+                  alt="self"
+                />
+              </div>
+
+              <div className="p-8">
+              
+
+                <p className="mt-2 text-gray-500">
+                  Looking to take your team away on a retreat to enjoy awesome
+                  food and take in some sunshine? We have a list of places to do
+                  just that.
+                </p>
+              </div>
+            </div>
+          </div>
 			<div className="space-y-6">
 				<div>
 					<h2 className="text-3xl font-extrabold">Projects</h2>
@@ -186,7 +139,7 @@ function App() {
 				</div>
 			</div>
 			<div className="space-y-6">
-				<h2 className="text-2xl font-bold md:text-4xl">Timeline</h2>
+				<h2 className="text-2xl font-bold md:text-4xl" id="timeline">Timeline</h2>
 				<div className="space-y-8">
 					<div>
 						<h3 className="mb-3 text-lg font-bold md:text-xl">2021</h3>
@@ -252,7 +205,7 @@ function App() {
 		<section className="py-6 rounded-md bg-gray-900 dark:bg-gray-50 text-gray-50 dark:text-gray-900">
 			<div className="container flex flex-col justify-center max-w-3xl p-4 px-6 mx-auto space-y-8 xl:max-w-5xl md:p-10 lg:space-y-0 lg:space-x-12 lg:justify-between lg:flex-row">
 				<div className="flex flex-col space-y-4 text-center lg:text-left">
-					<h1 className="text-5xl font-bold leading-none">Reach Out to Me!</h1>
+					<h1 className="text-5xl font-bold leading-none" id="contact">Reach Out to Me!</h1>
 					<p>Fill out this form or email me directly at:</p>
           <a href="mailto:robert.stewart.m@outlook.com" className="text-violet-400 dark:text-violet-600">robert.stewart.m@outlook.com</a>
        
