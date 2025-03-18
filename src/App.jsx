@@ -60,13 +60,13 @@ function App() {
 		<main className="container flex-1 max-w-3xl px-6 mx-auto space-y-12 xl:max-w-5xl">
     <div className="mx-auto max-w-md overflow-hidden md:max-w-2xl">
             <div className="md:flex">
-              <div className="md:shrink-0">
+           
                 <img
                   className="h-48 w-full object-cover md:h-full md:w-48 rounded-b-3xl"
-                  src="rs691.github.io/src/assets/me.svg"
+                  src="/src/assets/me.svg"
                   alt="self"
                 />
-              </div>
+          
 
               <div className="p-8">
               
