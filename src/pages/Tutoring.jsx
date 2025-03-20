@@ -1,11 +1,11 @@
-import Navbar2 from "../components/Navbar";
-// import "../styles.css";
+import Navbar from "../components/Navbar";
+
 
 
 export default function Tutoring() {
   return (
 	<>
-   <Navbar2 />
+   <Navbar />
       <section className="p-6 black:text-white black:bg:white" >
 		<div className="container grid justify-center grid-cols-2 mx-auto text-center lg:grid-cols-3">
 			<div className="flex flex-col justify-start m-2 lg:m-6">

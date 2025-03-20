@@ -1,9 +1,10 @@
-import Navbar2 from "../components/Navbar2";
+
+import Navbar from "../components/Navbar";
 
 export default function About() {
   return (
   <>
- 
+ <Navbar />
       <section className="p-6 bg:black dark:text-white" >
     <div className="container grid justify-center grid-cols-2 mx-auto text-center lg:grid-cols-3">
       <div className="flex flex-col justify-start m-2 lg:m-6">

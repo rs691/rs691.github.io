@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import './index.css';
-import Navbar2 from './components/Navbar2';
+import Navbar from './components/Navbar';
 
 
 function Layout({ children }) {
@@ -8,7 +8,7 @@ function Layout({ children }) {
     <div className="layout">
      
 {/* <Navbar /> */}
-<Navbar2 />
+<Navbar />
 
     
     

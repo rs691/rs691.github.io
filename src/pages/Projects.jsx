@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Navbar2 from "../components/Navbar";
+import Navbar from "../components/Navbar";
 import PropTypes from 'prop-types';
 
 
@@ -88,8 +88,10 @@ export default function Projects() {
     };
 
     return (
+        <>
+        <Navbar />
         <div className="overflow-x-hidden min-h-3/4">
-            <Navbar2 />
+           
             <div className="container mx-auto px-4">
                 <h1 className=" px-4 text-center text-7xl font-medium mb-8 mt-10 pt-8">Projects</h1>
                 
@@ -131,5 +133,6 @@ export default function Projects() {
                
             </div>
         </div>
+        </>
     );
 }
