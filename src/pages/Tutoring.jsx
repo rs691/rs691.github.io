@@ -24,7 +24,7 @@ export default function Tutoring() {
 		</div>
 	</section>
 	{/* Award / Scholarships */}
-	<section className="my-8 bg-black dark:bg-gray-100 text-gray-100 dark:text-gray-800">
+	<section className="my-8 bg-gray-600 dark:bg-gray-100 text-gray-100 dark:text-gray-800">
 	<div className="container flex flex-col items-center p-4 mx-auto space-y-6 md:p-8">
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#D6A800" className="w-16 h-16 text-violet-400 dark:text-violet-600">
 			<polygon points="328.375 384 332.073 458.999 256.211 406.28 179.924 459.049 183.625 384 151.586 384 146.064 496 182.756 496 256.169 445.22 329.242 496 365.936 496 360.414 384 328.375 384"></polygon>

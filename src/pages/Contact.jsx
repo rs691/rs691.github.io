@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import emailjs from '@emailjs/browser';
 import Navbar from '../components/Navbar';
+import "../App.css";
 
 const Contact = () => {
   const form = useRef();
@@ -38,6 +39,7 @@ const Contact = () => {
   return (
     <>
     <Navbar />
+    <div className='padding'>
       {success && (
         <div className="px-4 py-2 bg-green-500 text-white text-center rounded-md mb-4">
           ✅ Your message has been sent successfully! Redirecting...
@@ -94,6 +96,7 @@ const Contact = () => {
           </div>
         </section>
       </form>
+      </div>
     </>
   );
 };

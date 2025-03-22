@@ -5,15 +5,15 @@ export default function About() {
   return (
   <>
  <Navbar />
-      <section className="p-6 bg:black dark:text-white" >
+      <section id="about" className="p-6 bg:dark dark:text-white" >
     <div className="container grid justify-center grid-cols-2 mx-auto text-center lg:grid-cols-3">
       <div className="flex flex-col justify-start m-2 lg:m-6">
-        <p className="text-4xl font-bold leading-none lg:text-6xl">50+</p>
-        <p className="text-sm sm:text-base">Clients</p>
+        <p className="text-4xl font-bold leading-none lg:text-6xl">200+</p>
+        <p className="text-sm sm:text-base">Peers Assisted</p>
       </div>
       <div className="flex flex-col justify-start m-2 lg:m-6">
-        <p className="text-4xl font-bold leading-none lg:text-6xl">89K</p>
-        <p className="text-sm sm:text-base">Followers on social media</p>
+        <p className="text-4xl font-bold leading-none lg:text-6xl">100+</p>
+        <p className="text-sm sm:text-base">Courses</p>
       </div>
       <div className="flex flex-col justify-start m-2 lg:m-6">
         <p className="text-4xl font-bold leading-none lg:text-6xl">3</p>
@@ -34,7 +34,7 @@ export default function About() {
     </div>
   </section>
   {/* Award / Scholarships */}
-  <section className="my-8 bg-black dark:bg-gray-100 text-gray-100 dark:text-gray-800">
+  <section className="my-8 bg-gray-600 dark:bg-gray-100 text-gray-100 dark:text-gray-800">
   <div className="container flex flex-col items-center p-4 mx-auto space-y-6 md:p-8">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#D6A800" className="w-16 h-16 text-violet-400 dark:text-violet-600">
       <polygon points="328.375 384 332.073 458.999 256.211 406.28 179.924 459.049 183.625 384 151.586 384 146.064 496 182.756 496 256.169 445.22 329.242 496 365.936 496 360.414 384 328.375 384"></polygon>
