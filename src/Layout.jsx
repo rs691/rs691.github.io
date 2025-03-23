@@ -1,34 +1,14 @@
-import PropTypes from 'prop-types';
-import './index.css';
-import Navbar from './components/Navbar';
-
+import PropTypes from "prop-types";
+import "./index.css";
+import Navbar from "./components/Navbar";
 
 function Layout({ children }) {
   return (
     <div className="layout">
      
-{/* <Navbar /> */}
-<Navbar />
+      <Navbar />
 
-    
-    
-      <main>
-        
-        <section id="about" className="p-4">
-       
-       
-         
-
-          {children}
-        </section>
-     
-      </main>
-
-
-
-
-
-	
+      <main>{children}</main>
     </div>
   );
 }

@@ -71,41 +71,44 @@ export default function Projects() {
         <>
        
             <Navbar />
-            <div className="padding p-4 bg:dark dark:text-white">
-            <div className="overflow-x-hidden min-h-3/4">
-                <div className="container mx-auto px-4">
-                    <h1 className="px-4 text-center text-7xl font-medium mb-8 mt-10 pt-8">Projects</h1>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto justify-center max-w-6xl">
-                        {projects.map((project) => (
-                            <div key={project.id} className="card bg-base-100 shadow-xl">
-                                <div className="card-body">
-                                    <h2 className="card-title text-3xl">{project.title}</h2>
-                                    <p>{project.summary}</p>
-                                    <div className="card-actions justify-end">
-                                        <button 
-                                            className="btn btn-secondary" 
-                                            onClick={() => setActiveModal(project.id)}
-                                        >
-                                            View Details
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    {projects.map((project) => (
-                        <Modal 
-                            key={project.id}
-                            isOpen={activeModal === project.id}
-                            title={project.title}
-                            summary={project.summary}
-                            bullets={project.bullets}
-                            onClose={() => setActiveModal(null)}
-                        />
-                    ))}
+            <div className="container mx-auto px-4">
+    <h1 className="text-center text-7xl font-medium mb-8 mt-10 pt-8">Projects</h1>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center max-w-6xl mx-auto p-6">
+        {projects.map((project) => (
+            <div 
+                key={project.id} 
+                className="card bg-gray-600 text-white shadow-lg rounded-lg flex flex-col justify-between h-[300px] p-6"
+            >
+                <h2 className="card-title text-3xl">{project.title}</h2>
+                <p className="flex-grow">{project.summary}</p>
+                <div className="card-actions flex justify-end">
+                    <button 
+                        className="btn btn-secondary" 
+                        onClick={() => setActiveModal(project.id)}
+                    >
+                        View Details
+                    </button>
                 </div>
             </div>
-        </div>
+        ))}
+    </div>
+</div>
+{projects.map((project) => (
+    <Modal
+        key={project.id}
+        isOpen={activeModal === project.id}
+        title={project.title}
+        summary={project.summary}
+        bullets={project.bullets}
+        onClose={() => setActiveModal(null)}
+    />
+))}
         </>
     );
 }
+
+
+
+           
+        
+
