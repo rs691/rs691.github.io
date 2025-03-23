@@ -49,7 +49,7 @@ const Contact = () => {
       <form ref={form} onSubmit={sendEmail}>
         <section className="p-6 black:text-white black:bg:white">
           <div className="container w-full max-w-xl p-8 mx-auto space-y-6 rounded-md shadow bg-gray-900 dark:bg-gray-50">
-            <h2 className="w-full text-3xl font-bold leading-tight">Contact Me</h2>
+            <h2 className="w-full text-3xl font-bold leading-tight bg:dark text-white">Contact Me</h2>
             <div>
               <label htmlFor="name" className="block mb-1 ml-1">
                 Name
@@ -59,7 +59,7 @@ const Contact = () => {
                 type="text"
                 placeholder="Your name"
                 required
-                className="block w-full p-2 rounded focus:outline-none focus:ring focus:ring-opacity-25 focus:ring-violet-400 focus:dark:ring-violet-600 bg-gray-800 dark:bg-gray-100"
+                className="block w-full p-2 rounded focus:outline-none focus:ring focus:ring-opacity-25 focus:ring-violet-400 focus:dark:ring-violet-600 bg-white dark:bg-white text-black"
               />
             </div>
             <div>
@@ -71,7 +71,7 @@ const Contact = () => {
                 type="email"
                 placeholder="Your email"
                 required
-                className="block w-full p-2 rounded focus:outline-none focus:ring focus:ring-opacity-25 focus:ring-violet-400 focus:dark:ring-violet-600 bg-gray-800 dark:bg-gray-100"
+                className="block w-full p-2 rounded focus:outline-none focus:ring focus:ring-opacity-25 focus:ring-violet-400 focus:dark:ring-violet-600 bg-white dark:bg-white text-black"
               />
             </div>
             <div>
@@ -82,7 +82,7 @@ const Contact = () => {
                 id="message"
                 type="text"
                 placeholder="Message..."
-                className="block w-full p-2 rounded autoexpand focus:outline-none focus:ring focus:ring-opacity-25 focus:ring-violet-400 focus:dark:ring-violet-600 bg-gray-800 dark:bg-gray-100"
+                className="block w-full p-2 rounded autoexpand focus:outline-none focus:ring focus:ring-opacity-25 focus:ring-violet-400 focus:dark:ring-violet-600 bg-white dark:bg-white text-black"
               ></textarea>
             </div>
             <div>
