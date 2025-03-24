@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import  "../App.css";
+import "../css/styles.css";
 
 export default function Navbar() {
   // State to track the current theme
@@ -53,11 +54,11 @@ export default function Navbar() {
             : "bg-white text-primary-content"
         }`}
       >
-        <button
+        <button 
           className={`btn ${
             theme === "dark"
-              ? "btn-outline text-purple-300"
-              : "btn-primary btn-outline"
+              ? "btn-outline outline-1 text-purple-300"
+              : "btn-primary btn-outline outline-1 outline-white"
           } flex items-center text-xl`}
           onClick={() => (window.location.href = "#")}
         >
@@ -65,42 +66,42 @@ export default function Navbar() {
         </button>
         <div className="flex space-x-4 items-center">
           <a
-            className={`btn btn-outline normal-case text-xl ${
-              theme === "dark" ? "text-purple-300" : "btn-primary btn-outline"
+            className={`btn btn-outline outline-1 normal-case text-xl ${
+              theme === "dark" ? "text-purple-300" : "btn-primary btn-outline outline-2"
             }`}
             href="#about"
           >
             About Me
           </a>
           <a
-            className={`btn btn-outline normal-case text-xl ${
-              theme === "dark" ? "text-purple-300" : "btn-primary btn-outline"
+            className={`btn btn-outline outline-1 normal-case text-xl ${
+              theme === "dark" ? "text-purple-300" : "btn-primary btn-outline outline-2"
             }`}
             href="#projects"
           >
             Projects
           </a>
           <a
-            className={`btn btn-outline normal-case text-xl ${
-              theme === "dark" ? "text-purple-300" : "btn-primary btn-outline"
+            className={`btn btn-outline outline-1 normal-case text-xl ${
+              theme === "dark" ? "text-purple-300" : "btn-primary btn-outline outline-2"
             }`}
             href="#tutoring"
           >
             Tutoring
           </a>
           <a
-            className={`btn btn-outline normal-case text-xl ${
-              theme === "dark" ? "text-purple-300" : "btn-primary btn-outline"
+            className={`btn btn-outline outline-1 normal-case text-xl ${
+              theme === "dark" ? "text-purple-300" : "btn-primary btn-outline outline-2"
             }`}
             href="#contact"
           >
             Contact
           </a>
-          <select
+          <select id="selectButton"
             value="Quick Actions"
-            className={`select btn btn-outline normal-case text-xl ${
+            className={`select btn btn-outline outline-1 text-primary normal-case text-xl ${
               theme === "dark"
-                ? "text-purple-300 border-purple-300"
+                ? "text-purple-300 border-purple-300 outline-2"
                 : "btn-primary btn-outline"
             }`}
             onChange={(e) => openModal(e.target.value)}
@@ -131,7 +132,7 @@ export default function Navbar() {
 
             {/* Moon icon */}
             <svg
-              color="#ADB2D4"
+              color="#0C0950"
               className="swap-off h-10 w-10 fill-current"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"

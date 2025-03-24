@@ -1,0 +1,16 @@
+
+@tailwind utilities;
+
+/* add a border to the navbar buttons*/
+.btn  {
+  border: 2px solid #0C0950;
+}
+#selectButton {
+  border: 2px solid #0C0950;
+}
+
+
+/* add a different border only in dark mode*/
+.dark .btn {
+  border: 2px solid #F9F871;
+}
