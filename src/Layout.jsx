@@ -3,14 +3,13 @@ import "./index.css";
 import "./css/styles.css";
 import Navbar from "./components/Navbar";
 import CardContainer from "./components/CardContainer";
+import "./css/layout.css";
 
 
 
 function Layout({ children }) {
   return (
-    
-
-
+    <div className="background">
     <div className="layout">
      
   
@@ -22,7 +21,8 @@ function Layout({ children }) {
         </main>
         </CardContainer>
     </div>
-    
+    </div>
+   
   );
 }
 
