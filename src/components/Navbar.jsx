@@ -27,6 +27,9 @@ export default function Navbar() {
     };
   }, [activeModal]);
 
+
+
+
   // Handle theme toggle
   const handleThemeChange = (e) => {
     const newTheme = e.target.checked ? "dark" : "light";
@@ -45,6 +48,8 @@ export default function Navbar() {
     setActiveModal(null);
   };
 
+
+  
   return (
     <>
       <nav id="navbar"
@@ -96,6 +101,14 @@ export default function Navbar() {
             href="#contact"
           >
             Contact
+          </a>
+          <a
+            className={`btn btn-outline outline-1 normal-case text-xl ${
+              theme === "dark" ? "text-purple-300" : "btn-primary btn-outline outline-2"
+            }`}
+            href="#awards"
+          >
+            Awards/Scholarships
           </a>
           <select id="selectButton"
             value="Quick Actions"

@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import emailjs from '@emailjs/browser';
 import Navbar from '../components/Navbar';
 import "../App.css";
+import ErrorPage from './ErrorPage';
 
 const Contact = () => {
   const form = useRef();
@@ -38,6 +39,7 @@ const Contact = () => {
 
   return (
     <>
+  
     <Navbar />
     <div className='padding'>
       {success && (
@@ -47,8 +49,10 @@ const Contact = () => {
       )}
 
       <form ref={form} onSubmit={sendEmail}>
-        <section className="p-6 black:text-white black:bg:white">
-          <div className="container w-full max-w-xl p-8 mx-auto space-y-6 rounded-md shadow bg-gray-900 dark:bg-gray-50">
+      <section className="p-6 black:text-white black:bg:white" >
+	
+			
+        <div className=" max-w-xl p-8 mx-auto space-y-6 rounded-md shadow bg-gray-900 dark:bg-gray-800">
             <h2 className="w-full text-3xl font-bold leading-tight bg:dark text-white">Contact Me</h2>
             <div>
               <label htmlFor="name" className="block mb-1 ml-1">
@@ -94,9 +98,14 @@ const Contact = () => {
               </button>
             </div>
           </div>
-        </section>
+		
+			
+	
+	</section>
+       
       </form>
       </div>
+
     </>
   );
 };

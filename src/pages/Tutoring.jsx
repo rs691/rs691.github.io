@@ -6,7 +6,7 @@ export default function Tutoring() {
   return (
 	<>
    <Navbar />
-      <section className="p-6 black:text-white black:bg:white" >
+      <section className="p-6 black:text-white black:bg:white  " >
 		<div className="container grid justify-center grid-cols-2 mx-auto text-center lg:grid-cols-3">
 			<div className="flex flex-col justify-start m-2 lg:m-6">
 				<p className="text-4xl font-bold leading-none lg:text-6xl">150+</p>

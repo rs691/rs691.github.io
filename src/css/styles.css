@@ -14,3 +14,32 @@
 .dark .btn {
   border: 2px solid #F9F871;
 }
+
+.title {
+  font-family: "Indie Flower", cursive;
+}
+
+.test{
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 auto;
+}
+.test2{
+  display:flex;
+  overflow: hidden;
+  border-radius: 16px;
+  background-color: #1a1a2e; /* Fallback for older browsers */
+  background-color: oklch(0.13 0.028 261.692);
+  gap: 8px;
+  margin: 0 auto;
+}
+.test3{
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: rgba(26, 26, 46, 0.025); /* Fallback for older browsers */
+  background-color: oklch(0.13 0.028 261.692 / 0.025);
+  margin: 0 auto;
+}

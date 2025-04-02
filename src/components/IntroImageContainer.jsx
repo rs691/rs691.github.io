@@ -6,7 +6,9 @@ function IntroImageContainer() {
   <div className="mx-auto max-w-md overflow-hidden rounded-xl md:max-w-3xl">
     <div className="md:flex">
       <div className="md:shrink-0">
-      <img className="rounded-lg w-60" src="./me.svg" alt="self" />
+      {/* <img className="rounded-lg w-60" src="./me.svg" alt="self" /> */}
+      
+      <img className="rounded-lg w-60 " src="./SelfieOp3.png" alt="self2" />
       
       </div>
       <div className="p-8">
@@ -18,6 +20,7 @@ function IntroImageContainer() {
       </div>
     </div>
   </div>
+  
   
       );
   }

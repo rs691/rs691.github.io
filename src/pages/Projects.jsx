@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
+import "../css/styles.css";
 
 const projects = [
     {
@@ -42,7 +43,12 @@ const Modal = ({ isOpen, title, summary, bullets, onClose }) => {
     
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 bg-black bg-opacity-50" onClick={onClose}></div>
+            <button 
+                className="absolute inset-0 bg-black bg-opacity-50" 
+                onClick={onClose} 
+                tabIndex="0" 
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClose(); }}
+            ></button>
             <div className="bg-base-100 rounded-lg w-11/12 max-w-3xl z-10 p-6 relative text-xl">
                 <h3 className="font-bold text-lg">{title}</h3>
                 <p className="py-4">{summary}</p>
@@ -72,12 +78,12 @@ export default function Projects() {
        
             <Navbar />
             <div className="container mx-auto px-4">
-    <h1 className="text-center text-7xl font-medium mb-8 mt-10 pt-8">Projects</h1>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center max-w-6xl mx-auto p-6">
+    <h1 className="text-center text-7xl font-medium mb-8 mt-10 pt-6">Projects</h1>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center max-w-4xl mx-auto p-6">
         {projects.map((project) => (
             <div 
                 key={project.id} 
-                className="card bg-gray-600 text-white shadow-lg rounded-lg flex flex-col justify-between h-[300px] p-6"
+                className="card bg-gray-700 text-white shadow-lg rounded-lg flex flex-col justify-between h-[200px] p-6"
             >
                 <h2 className="card-title text-3xl">{project.title}</h2>
                 <p className="flex-grow">{project.summary}</p>

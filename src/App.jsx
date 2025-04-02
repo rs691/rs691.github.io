@@ -1,29 +1,20 @@
-import Layout from "./Layout";
 import "./App.css";
-import IntroImageContainer from "./components/IntroImageContainer";
+
 import Title from "./components/Title";
-
-
-
-
-
+import Layout from "./Layout";
 
 function App() {
   return (
-
-   
-    <Layout>
-        
-      <div className="padding">
   
-      <Title/>
-        </div>
     
-    <IntroImageContainer />
-    </Layout>
-   
-
-  
+      <Layout>
+      
+        <div className="padding">
+          <Title />
+        </div>
+       
+      </Layout>
+      
   );
 }
 

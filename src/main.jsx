@@ -6,6 +6,7 @@ import About from './pages/About.jsx'
 import Projects from './pages/Projects.jsx'
 
 import Tutoring from './pages/Tutoring.jsx'
+import Awards from './pages/Awards.jsx'
 
 import Contact from './pages/Contact.jsx'
 import ErrorPage from './pages/ErrorPage.jsx'
@@ -38,6 +39,10 @@ const router = createHashRouter([
   {
     path: '/tutoring',
     element: <Tutoring />,
+  },
+  {
+    path: '/awards',
+    element: <Awards />,
   },
   {
     path: '*',
