@@ -12,7 +12,8 @@ function App() {
         <div className="padding">
           <Title />
         </div>
-       
+      
+      
       </Layout>
       
   );

@@ -7,9 +7,13 @@ import "./css/layout.css";
 
 
 
+
 function Layout({ children }) {
   return (
-    <div className="background">
+    
+   
+    //set background to an image
+  
     <div className="layout">
      
   
@@ -21,7 +25,7 @@ function Layout({ children }) {
         </main>
         </CardContainer>
     </div>
-    </div>
+    
    
   );
 }

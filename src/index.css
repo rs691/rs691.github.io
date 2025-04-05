@@ -1,3 +1,13 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
+body[data-theme="light"] {
+    background-image: url('/bg-light.png');
+  }
+  
+  html[data-theme="dark"] {
+ background-color: black;
+        
+        
+  }
+

@@ -35,6 +35,18 @@ const projects = [
             'Utilized MySQL for data storage and retrieval.',
             'Deployed with Azure and GitHub Actions for CI/CD automation.'
         ]
+    },
+    {
+        id: 'project4',
+        title: 'Capstone Project Web Application',
+        summary: 'Made lead developer of capstone group project.',
+        bullets: [
+            'Used Django framework for the full stack development.',
+            'Collaborated with a team to design and implement the project.',
+            'Conducted user testing to gather feedback and improve functionality.',
+            'Presented the project to stakeholders, highlighting key features.'
+        ]
+        
     }
 ];
 
@@ -79,11 +91,11 @@ export default function Projects() {
             <Navbar />
             <div className="container mx-auto px-4">
     <h1 className="text-center text-7xl font-medium mb-8 mt-10 pt-6">Projects</h1>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center max-w-4xl mx-auto p-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-10 justify-center max-w-6xl mx-auto p-8">
         {projects.map((project) => (
             <div 
                 key={project.id} 
-                className="card bg-gray-700 text-white shadow-lg rounded-lg flex flex-col justify-between h-[200px] p-6"
+                className="card bg-gray-700 text-white shadow-lg rounded-lg flex flex-col justify-between h-[300px] p-6"
             >
                 <h2 className="card-title text-3xl">{project.title}</h2>
                 <p className="flex-grow">{project.summary}</p>
