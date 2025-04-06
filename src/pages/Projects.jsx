@@ -36,18 +36,7 @@ const projects = [
             'Deployed with Azure and GitHub Actions for CI/CD automation.'
         ]
     },
-    {
-        id: 'project4',
-        title: 'Capstone Project Web Application',
-        summary: 'Made lead developer of capstone group project.',
-        bullets: [
-            'Used Django framework for the full stack development.',
-            'Collaborated with a team to design and implement the project.',
-            'Conducted user testing to gather feedback and improve functionality.',
-            'Presented the project to stakeholders, highlighting key features.'
-        ]
-        
-    }
+
 ];
 
 const Modal = ({ isOpen, title, summary, bullets, onClose }) => {

@@ -1,34 +1,22 @@
 import PropTypes from "prop-types";
 import "./index.css";
 import "./css/styles.css";
-import Navbar from "./components/Navbar";
-import CardContainer from "./components/CardContainer";
+// import Navbar from "./components/Navbar";
+import Nav3 from "./components/Nav3";
+
 import "./css/layout.css";
-
-
-
-
 function Layout({ children }) {
   return (
-    
-   
-    //set background to an image
-  
     <div className="layout">
-     
-  
-      <Navbar />
-      <CardContainer>
+      <Nav3 />
       <main>
-       
         {children}
         </main>
-        </CardContainer>
+       
     </div>
-    
-   
   );
 }
+
 
 Layout.propTypes = {
   children: PropTypes.node.isRequired,

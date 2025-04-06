@@ -34,12 +34,15 @@
   gap: 8px;
   margin: 0 auto;
 }
-.test3{
-  display: block;
-  position: relative;
+
+
+
+.roundedImage2 {
+  border-radius: 20px;
   overflow: hidden;
-  border-radius: 8px;
-  background-color: rgba(26, 26, 46, 0.025); /* Fallback for older browsers */
-  background-color: oklch(0.13 0.028 261.692 / 0.025);
-  margin: 0 auto;
+  border: 2px solid #0C0950;
+  padding: 4px;
+  
+  width: 250px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }

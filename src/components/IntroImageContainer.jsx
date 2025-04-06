@@ -1,4 +1,4 @@
-
+import "../css/styles.css";
 
 function IntroImageContainer() {
     return (  
@@ -8,8 +8,10 @@ function IntroImageContainer() {
       <div className="md:shrink-0">
       {/* <img className="rounded-lg w-60" src="./me.svg" alt="self" /> */}
       
-      <img className="rounded-lg w-60 " src="./SelfieOp3.png" alt="self2" />
-      
+    
+      <div className="roundedImage2">
+      <img className="rounded-lg w-80" src="./SelfieOp3.png" alt="self3" />
+      </div>
       </div>
       <div className="p-8">
         <div id="img-sub" className="text-sm font-bold tracking-wide bg:dark dark:text-white "> Over the years, I have developed a passion for software development.
