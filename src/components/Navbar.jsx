@@ -90,6 +90,14 @@ export default function Navbar() {
             className={`btn btn-outline outline-1 normal-case text-xl ${
               theme === "dark" ? "text-purple-300" : "btn-primary btn-outline outline-2"
             }`}
+            href="#test"
+          >
+            Test
+          </a>
+          <a
+            className={`btn btn-outline outline-1 normal-case text-xl ${
+              theme === "dark" ? "text-purple-300" : "btn-primary btn-outline outline-2"
+            }`}
             href="#tutoring"
           >
             Tutoring

@@ -10,6 +10,7 @@
 }
 
 
+
 /* add a different border only in dark mode*/
 .dark .btn {
   border: 2px solid #F9F871;
@@ -30,7 +31,7 @@
   overflow: hidden;
   border-radius: 16px;
   background-color: #1a1a2e; /* Fallback for older browsers */
-  background-color: oklch(0.13 0.028 261.692);
+ 
   gap: 8px;
   margin: 0 auto;
 }
@@ -40,9 +41,9 @@
 .roundedImage2 {
   border-radius: 20px;
   overflow: hidden;
-  border: 2px solid #0C0950;
+ 
   padding: 4px;
   
   width: 250px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+ 
 }

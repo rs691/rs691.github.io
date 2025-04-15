@@ -10,6 +10,7 @@ import Awards from './pages/Awards.jsx'
 
 import Contact from './pages/Contact.jsx'
 import ErrorPage from './pages/ErrorPage.jsx'
+import Test from './pages/Test.jsx'
 
 
 import { createHashRouter, RouterProvider } from 'react-router-dom'
@@ -23,6 +24,10 @@ const router = createHashRouter([
   {
     path: '/about',
     element: <About />,
+  },
+  {
+    path: '/test',
+    element: <Test />,
   },
   {
     path: '/contact',

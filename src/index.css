@@ -3,6 +3,8 @@
 
 html[data-theme="light"] {
 background-color: #b9dcf5;
+
+
 }
 
 html[data-theme="dark"] {
@@ -12,4 +14,8 @@ background-color: #111111;
 
 
 }
+.my-element {
+    background: white;
+}
+
 

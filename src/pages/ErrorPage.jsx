@@ -22,6 +22,9 @@ function ErrorPage () {
 		</div>
 	</div>
 </section>
+<section >
+	
+</section>
     </div>
 	</>
   );

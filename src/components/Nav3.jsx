@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "../App.css";
 import "../css/styles.css";
 
-export default function Navbar() {
+export default function Nav3() {
   // State to track the current theme
   const [theme, setTheme] = useState("light");
   // State to control which modal is open

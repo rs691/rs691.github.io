@@ -4,8 +4,12 @@ import Navbar from '../components/Navbar';
 import "../App.css";
 import ErrorPage from './ErrorPage';
 
+
+
+
 const Contact = () => {
-  const form = useRef();
+
+const form = useRef();
   const [success, setSuccess] = useState(false);
 
   const sendEmail = (e) => {
@@ -37,58 +41,56 @@ const Contact = () => {
       );
   };
 
-  return (
-    <>
-  
-    <Navbar />
-    <div className='padding'>
-      {success && (
-        <div className="px-4 py-2 bg-green-500 text-white text-center rounded-md mb-4">
-          ✅ Your message has been sent successfully! Redirecting...
+  return(
+     <>
+       <Navbar />
+          <section className=" black:text-white black:bg:white" >
+              <div className='padding'>
+       {success && (
+         <div className="px-4 py-2 bg-green-500 text-white text-center rounded-md mb-4">
+           ✅ Your message has been sent successfully! Redirecting...
         </div>
       )}
 
-      <form ref={form} onSubmit={sendEmail}>
-      <section className="p-6 black:text-white black:bg:white" >
+       <form ref={form} onSubmit={sendEmail}>
+       <section className="my-8 bg-gray-600 dark:bg-gray-100 text-gray-100 dark:text-gray-800">
+       
+      
+
+
+    </section>
+     
+       </form>
+      </div>
+        </section>
+        {/* Award / Scholarships */}
+        <section className="p-6 dark:bg-gray-100 dark:text-gray-900">
+        <form className="container flex flex-col mx-auto space-y-12" ref={form} onSubmit={sendEmail}>
 	
-			
-        <div className=" max-w-xl p-8 mx-auto space-y-6 rounded-md shadow bg-gray-900 dark:bg-gray-800">
-            <h2 className="w-full text-3xl font-bold leading-tight bg:dark text-white">Contact Me</h2>
-            <div>
-              <label htmlFor="name" className="block mb-1 ml-1">
-                Name
-              </label>
-              <input
-                id="name"
-                type="text"
-                placeholder="Your name"
-                required
-                className="block w-full p-2 rounded focus:outline-none focus:ring focus:ring-opacity-25 focus:ring-violet-400 focus:dark:ring-violet-600 bg-white dark:bg-white text-black"
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="block mb-1 ml-1">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                placeholder="Your email"
-                required
-                className="block w-full p-2 rounded focus:outline-none focus:ring focus:ring-opacity-25 focus:ring-violet-400 focus:dark:ring-violet-600 bg-white dark:bg-white text-black"
-              />
-            </div>
-            <div>
-              <label htmlFor="message" className="block mb-1 ml-1">
-                Message
-              </label>
-              <textarea
-                id="message"
-                type="text"
-                placeholder="Message..."
-                className="block w-full p-2 rounded autoexpand focus:outline-none focus:ring focus:ring-opacity-25 focus:ring-violet-400 focus:dark:ring-violet-600 bg-white dark:bg-white text-black"
-              ></textarea>
-            </div>
+		<fieldset className="grid grid-cols-4 gap-6 p-6 rounded-md shadow-sm dark:bg-gray-50">
+			<div className="space-y-2 col-span-full lg:col-span-1">
+				<p className="font-medium">Personal Inormation</p>
+				<p className="text-xs">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Adipisci fuga autem eum!</p>
+			</div>
+			<div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
+				<div className="col-span-full sm:col-span-3">
+					<label htmlFor="firstname" className="text-sm">First name</label>
+					<input id="name" type="text" placeholder="First name" className="w-full rounded-md focus:ring focus:ring-opacity-75 dark:text-gray-50 focus:dark:ring-violet-600 dark:border-gray-300" />
+				</div>
+				<div className="col-span-full sm:col-span-3">
+					<label htmlFor="lastname" className="text-sm">Last name</label>
+					<input id="lastname" type="text" placeholder="Last name" className="w-full rounded-md focus:ring focus:ring-opacity-75 dark:text-gray-50 focus:dark:ring-violet-600 dark:border-gray-300" />
+				</div>
+				<div className="col-span-full sm:col-span-3">
+					<label htmlFor="email" className="text-sm">Email</label>
+					<input id="email" type="email" placeholder="Email" className="w-full rounded-md focus:ring focus:ring-opacity-75 dark:text-gray-50 focus:dark:ring-violet-600 dark:border-gray-300" />
+				</div>
+
+        <div className="col-span-full sm:col-span-3">
+					<label htmlFor="message" className="text-sm">Message</label>
+					<input id="message" type="text" placeholder="Message..." className="w-full rounded-md focus:ring focus:ring-opacity-75 dark:text-gray-50 focus:dark:ring-violet-600 dark:border-gray-300" />
+				</div>
+   
             <div>
               <button
                 type="submit"
@@ -96,18 +98,16 @@ const Contact = () => {
               >
                 Send
               </button>
-            </div>
-          </div>
-		
-			
-	
-	</section>
-       
-      </form>
+				
+			</div>
       </div>
+		</fieldset>
 
-    </>
+	</form>
+</section>
+    
+        </>
   );
-};
+}
 
 export default Contact;
