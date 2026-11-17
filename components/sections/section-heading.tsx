@@ -3,7 +3,6 @@
 import { useReducedMotion } from "motion/react"
 
 import { AuroraText } from "@/components/ui/aurora-text"
-import { AnimatedShinyText } from "@/components/ui/animated-shiny-text"
 import { StaggerItem, StaggerReveal } from "@/components/ui/stagger-reveal"
 import { auroraColors } from "@/lib/site-config"
 import { cn } from "@/lib/utils"
@@ -25,14 +24,11 @@ export const sectionBodyClass = "mt-14 md:mt-16"
 export function SectionHeading({
   heading,
   description,
-  aurora = false,
   className,
   as = "h2",
 }: {
   heading: string
   description?: string
-  /** Continuous aurora — reserved for the hero name; off by default */
-  aurora?: boolean
   className?: string
   as?: "h1" | "h2"
 }) {
@@ -47,17 +43,10 @@ export function SectionHeading({
       )}
     >
       <StaggerItem as={as} className={brandHeadingClass}>
-        {aurora ? (
-          <AuroraText colors={auroraColors}>{heading}</AuroraText>
-        ) : reduced ? (
+        {reduced ? (
           heading
         ) : (
-          <AnimatedShinyText
-            shimmerWidth={160}
-            className="mx-0 max-w-none text-foreground/85 dark:text-foreground/85"
-          >
-            {heading}
-          </AnimatedShinyText>
+          <AuroraText colors={auroraColors}>{heading}</AuroraText>
         )}
       </StaggerItem>
       {description ? (

@@ -87,7 +87,8 @@ function DialChrome({ value }: { value: number }) {
   return (
     <div
       className={cn(
-        "flex size-16 items-center justify-center rounded-full border border-black/12 bg-card/95 shadow-[inset_0_1px_0_rgba(255,255,255,1),0_10px_28px_-6px_rgba(0,0,0,.28)] backdrop-blur-md md:size-[4.5rem]",
+        // Mobile: larger tap-target chrome, still corner-housed so it doesn’t crowd copy
+        "flex size-20 items-center justify-center rounded-full border border-black/12 bg-card/95 shadow-[inset_0_1px_0_rgba(255,255,255,1),0_10px_28px_-6px_rgba(0,0,0,.28)] backdrop-blur-md md:size-24",
         "dark:border-white/10 dark:bg-background/80 dark:shadow-[0_10px_28px_-6px_rgba(0,0,0,.45)]"
       )}
     >
@@ -97,7 +98,7 @@ function DialChrome({ value }: { value: number }) {
         max={100}
         gaugePrimaryColor="#a855f7"
         gaugeSecondaryColor="color-mix(in oklch, var(--muted-foreground) 35%, transparent)"
-        className="size-12 text-xs font-mono font-semibold tabular-nums text-foreground md:size-14 md:text-sm"
+        className="size-16 text-sm font-mono font-semibold tabular-nums text-foreground md:size-20 md:text-base"
       />
     </div>
   )
