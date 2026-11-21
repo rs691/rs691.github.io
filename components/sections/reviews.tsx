@@ -10,6 +10,7 @@ import {
 } from "motion/react"
 
 import { SlimFooter } from "@/components/sections/contact"
+import { EndingForegroundGlyphs } from "@/components/sections/ending-foreground-glyphs"
 import {
   brandHeadingClass,
   SectionHeading,
@@ -209,21 +210,24 @@ function EndingLanding({ progress }: { progress: MotionValue<number> }) {
 
   return (
     <>
-      <motion.h2
+      <motion.div
         style={{
           opacity: headingOpacity,
           y: headingY,
           scale: headingScale,
           filter: headingFilter,
         }}
-        className={cn(
-          brandHeadingClass,
-          "pointer-events-none absolute inset-x-0 top-[28%] z-30 px-6 text-center will-change-transform md:top-[30%]",
-          "drop-shadow-[0_18px_40px_rgba(0,0,0,.22)] dark:drop-shadow-[0_18px_48px_rgba(0,0,0,.55)]"
-        )}
+        className="pointer-events-none absolute inset-x-0 top-[28%] z-30 flex justify-center px-6 will-change-transform md:top-[30%]"
       >
-        {siteConfig.footer.heading}
-      </motion.h2>
+        <h2
+          className={cn(
+            brandHeadingClass,
+            "text-center drop-shadow-[0_18px_40px_rgba(0,0,0,.22)] dark:drop-shadow-[0_18px_48px_rgba(0,0,0,.55)]"
+          )}
+        >
+          {siteConfig.footer.heading}
+        </h2>
+      </motion.div>
       <motion.div
         style={{ y: footerY, opacity: footerOpacity }}
         className="absolute inset-x-0 bottom-0 z-30 will-change-transform"
@@ -316,6 +320,7 @@ export function Reviews() {
       >
         <div className="sticky top-0 isolate flex h-svh flex-col overflow-hidden bg-background">
           <ParallaxBackdrop progress={scrollYProgress} />
+          <EndingForegroundGlyphs progress={scrollYProgress} />
           <TutoringIntro progress={scrollYProgress} />
           <div className="relative min-h-0 flex-1">
             {items.map((review, index) => (
