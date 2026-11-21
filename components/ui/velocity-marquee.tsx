@@ -75,36 +75,33 @@ export function VelocityMarquee({
     targetSpeedRef.current = baseSpeed + t * boostSpeed
   })
 
-  const tick = useCallback(
-    (ts: number) => {
-      const track = trackRef.current
-      if (!track) {
-        rafRef.current = requestAnimationFrame(tick)
-        return
+  const tick = useCallback(function tickFn(ts: number) {
+    const track = trackRef.current
+    if (!track) {
+      rafRef.current = requestAnimationFrame(tickFn)
+      return
+    }
+
+    if (!lastTsRef.current) lastTsRef.current = ts
+    const dt = Math.min(0.05, (ts - lastTsRef.current) / 1000)
+    lastTsRef.current = ts
+
+    if (!reduced && !pausedRef.current) {
+      speedRef.current +=
+        (targetSpeedRef.current - speedRef.current) * Math.min(1, dt * 3)
+
+      const half = track.scrollWidth / 2
+      if (half > 0) {
+        const dir = reverse ? 1 : -1
+        offsetRef.current += dir * speedRef.current * dt
+        while (offsetRef.current <= -half) offsetRef.current += half
+        while (offsetRef.current > 0) offsetRef.current -= half
+        track.style.transform = `translate3d(${offsetRef.current}px,0,0)`
       }
+    }
 
-      if (!lastTsRef.current) lastTsRef.current = ts
-      const dt = Math.min(0.05, (ts - lastTsRef.current) / 1000)
-      lastTsRef.current = ts
-
-      if (!reduced && !pausedRef.current) {
-        speedRef.current +=
-          (targetSpeedRef.current - speedRef.current) * Math.min(1, dt * 3)
-
-        const half = track.scrollWidth / 2
-        if (half > 0) {
-          const dir = reverse ? 1 : -1
-          offsetRef.current += dir * speedRef.current * dt
-          while (offsetRef.current <= -half) offsetRef.current += half
-          while (offsetRef.current > 0) offsetRef.current -= half
-          track.style.transform = `translate3d(${offsetRef.current}px,0,0)`
-        }
-      }
-
-      rafRef.current = requestAnimationFrame(tick)
-    },
-    [reduced, reverse]
-  )
+    rafRef.current = requestAnimationFrame(tickFn)
+  }, [reduced, reverse])
 
   useEffect(() => {
     pausedRef.current = paused

@@ -20,9 +20,27 @@ const fontMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://robert-stewart.dev"),
   title: "Robert Stewart | Full-Stack Software Engineer",
   description:
     "Full-stack software engineer building multi-tenant mobile, web, and cloud systems end to end.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    url: "https://robert-stewart.dev",
+    title: "Robert Stewart | Full-Stack Software Engineer",
+    description:
+      "Full-stack software engineer building multi-tenant mobile, web, and cloud systems end to end.",
+    siteName: "Robert Stewart",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Robert Stewart | Full-Stack Software Engineer",
+    description:
+      "Full-stack software engineer building multi-tenant mobile, web, and cloud systems end to end.",
+  },
 }
 
 export const viewport: Viewport = {

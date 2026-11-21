@@ -171,7 +171,7 @@ export function Reviews() {
         <>
           <SectionHeading heading={heading} description={description} />
           <StaticQuotes items={items} />
-          <ContactPanel className="mt-16" />
+          <ContactPanel id="contact" className="mt-16" />
         </>
       ) : (
         <div
@@ -206,6 +206,8 @@ export function Reviews() {
               <ContactPanel className="h-full border-t-0" />
             </motion.div>
           </div>
+          {/* Hash target at track end so #contact lands with footer fully risen */}
+          <div id="contact" className="pointer-events-none absolute bottom-0 left-0 h-px w-full" />
         </div>
       )}
     </section>

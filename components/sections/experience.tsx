@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { GraduationCap } from "lucide-react"
 import {
   motion,
@@ -55,18 +55,13 @@ export function Experience() {
 
   useMotionValueEvent(scrollYProgress, "change", syncReveal)
 
-  useEffect(() => {
-    syncReveal(scrollYProgress.get())
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- seed once from current scroll
-  }, [])
-
   return (
     <section id="experience" className="scroll-mt-24">
       <SectionHeading heading={heading} description={description} />
 
       <div
         className={cn(
-          "mx-auto max-w-3xl px-5 md:px-6",
+          "mx-auto max-w-3xl px-6",
           sectionBodyClass
         )}
       >

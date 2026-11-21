@@ -9,6 +9,8 @@ interface BentoGridProps extends ComponentPropsWithoutRef<"div"> {
   className?: string
 }
 
+type BentoLink = { href: string; label: string }
+
 interface BentoCardProps extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
   name: string
   className?: string
@@ -18,6 +20,8 @@ interface BentoCardProps extends Omit<ComponentPropsWithoutRef<"div">, "children
   eyebrow?: string
   href?: string
   cta?: string
+  /** Prefer this when a card has App Store + Play (or multiple CTAs). */
+  links?: BentoLink[]
   children?: ReactNode
   /** Narrow cards: less copy chrome so the animation keeps the upper pane. */
   compact?: boolean
@@ -72,86 +76,97 @@ const BentoCard = ({
   eyebrow,
   href,
   cta,
+  links,
   children,
   compact = false,
   ...props
-}: BentoCardProps) => (
-  <div
-    className={cn(
-      "group relative col-span-3 flex flex-col justify-between overflow-hidden rounded-xl",
-      "border border-black/8 bg-card",
-      "[box-shadow:0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.04),0_12px_24px_-8px_rgba(0,0,0,.08)]",
-      "dark:border-white/10 dark:bg-neutral-950",
-      "dark:[box-shadow:0_0_0_1px_rgba(255,255,255,.04),0_-20px_80px_-20px_#ffffff1f_inset,0_0_40px_-12px_rgba(255,255,255,.08)]",
-      "transform-gpu transition-shadow duration-300",
-      "hover:[box-shadow:0_0_0_1px_rgba(0,0,0,.04),0_4px_8px_rgba(0,0,0,.05),0_16px_32px_-10px_rgba(0,0,0,.1)]",
-      "dark:hover:[box-shadow:0_0_0_1px_rgba(255,255,255,.06),0_-20px_80px_-20px_#ffffff1f_inset,0_0_56px_-10px_rgba(255,255,255,.12)]",
-      className
-    )}
-    {...props}
-  >
-    <div className="pointer-events-none absolute inset-0">{background}</div>
+}: BentoCardProps) => {
+  const ctas =
+    links && links.length > 0
+      ? links
+      : href && cta
+        ? [{ href, label: cta }]
+        : []
 
+  return (
     <div
       className={cn(
-        "relative z-10 mt-auto bg-gradient-to-t from-card to-transparent dark:from-neutral-950",
-        compact
-          ? "via-card/95 from-40% px-3 pt-16 pb-3 dark:via-neutral-950/95"
-          : "via-card/90 p-4 pt-12 dark:via-neutral-950/90"
+        "group relative col-span-3 flex flex-col justify-between overflow-hidden rounded-xl",
+        "border border-black/8 bg-card",
+        "[box-shadow:0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.04),0_12px_24px_-8px_rgba(0,0,0,.08)]",
+        "dark:border-white/10 dark:bg-neutral-950",
+        "dark:[box-shadow:0_0_0_1px_rgba(255,255,255,.04),0_-20px_80px_-20px_#ffffff1f_inset,0_0_40px_-12px_rgba(255,255,255,.08)]",
+        "transform-gpu transition-shadow duration-300",
+        "hover:[box-shadow:0_0_0_1px_rgba(0,0,0,.04),0_4px_8px_rgba(0,0,0,.05),0_16px_32px_-10px_rgba(0,0,0,.1)]",
+        "dark:hover:[box-shadow:0_0_0_1px_rgba(255,255,255,.06),0_-20px_80px_-20px_#ffffff1f_inset,0_0_56px_-10px_rgba(255,255,255,.12)]",
+        className
       )}
+      {...props}
     >
+      <div className="pointer-events-none absolute inset-0">{background}</div>
+
       <div
         className={cn(
-          "pointer-events-none flex flex-col",
-          compact ? "gap-0.5" : "gap-1"
+          "relative z-10 mt-auto bg-gradient-to-t from-card to-transparent dark:from-neutral-950",
+          compact
+            ? "via-card/95 from-40% px-3 pt-16 pb-3 dark:via-neutral-950/95"
+            : "via-card/90 p-4 pt-12 dark:via-neutral-950/90"
         )}
       >
-        <Icon
-          aria-hidden
+        <div
           className={cn(
-            "origin-left transform-gpu text-neutral-700 transition-all duration-300 ease-in-out group-hover:scale-75 dark:text-neutral-300",
-            compact ? "h-8 w-8" : "h-12 w-12"
+            "pointer-events-none flex flex-col",
+            compact ? "gap-0.5" : "gap-1"
           )}
-        />
-        {eyebrow && (
-          <span className="font-mono text-[0.65rem] tracking-widest text-muted-foreground uppercase">
-            {eyebrow}
-          </span>
+        >
+          <Icon
+            aria-hidden
+            className={cn(
+              "origin-left transform-gpu text-neutral-700 transition-all duration-300 ease-in-out group-hover:scale-75 dark:text-neutral-300",
+              compact ? "h-8 w-8" : "h-12 w-12"
+            )}
+          />
+          {eyebrow && (
+            <span className="font-mono text-[0.65rem] tracking-widest text-muted-foreground uppercase">
+              {eyebrow}
+            </span>
+          )}
+          <h3
+            className={cn(
+              "font-semibold text-neutral-800 dark:text-neutral-300",
+              compact ? "text-lg" : "text-xl"
+            )}
+          >
+            {name}
+          </h3>
+          <p
+            className={cn(
+              "text-neutral-500 dark:text-neutral-400",
+              compact
+                ? "line-clamp-2 text-sm leading-snug"
+                : "max-w-lg text-base"
+            )}
+          >
+            {description}
+          </p>
+          {children}
+        </div>
+
+        {ctas.length > 0 && (
+          <div className="pointer-events-none mt-2 flex w-full flex-row flex-wrap items-center gap-x-3 gap-y-1">
+            {ctas.map((link) => (
+              <CardCta key={link.href} href={link.href} cta={link.label} />
+            ))}
+          </div>
         )}
-        <h3
-          className={cn(
-            "font-semibold text-neutral-800 dark:text-neutral-300",
-            compact ? "text-lg" : "text-xl"
-          )}
-        >
-          {name}
-        </h3>
-        <p
-          className={cn(
-            "text-neutral-500 dark:text-neutral-400",
-            compact
-              ? "line-clamp-2 text-sm leading-snug"
-              : "max-w-lg text-base"
-          )}
-        >
-          {description}
-        </p>
-        {children}
       </div>
 
-      {/* One CTA always — avoids duplicate tab stops + hover-only links on desktop */}
-      {href && cta && (
-        <div className="pointer-events-none mt-2 flex w-full flex-row items-center">
-          <CardCta href={href} cta={cta} />
-        </div>
-      )}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 transform-gpu transition-all duration-300 group-hover:bg-black/3 group-hover:dark:bg-neutral-800/10"
+      />
     </div>
-
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-0 transform-gpu transition-all duration-300 group-hover:bg-black/3 group-hover:dark:bg-neutral-800/10"
-    />
-  </div>
-)
+  )
+}
 
 export { BentoCard, BentoGrid }

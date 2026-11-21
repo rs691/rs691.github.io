@@ -88,13 +88,12 @@ export function Projects() {
 
       <div
         className={cn(
-          "mx-auto max-w-5xl px-5 md:px-6",
+          "mx-auto max-w-5xl px-6",
           sectionBodyClass
         )}
       >
         <BentoGrid>
           {ordered.map((project, i) => {
-            const link = project.links?.[0]
             const compact = narrowVisuals.has(project.visual)
             return (
               <BlurFade
@@ -112,8 +111,7 @@ export function Projects() {
                   eyebrow={project.status}
                   description={project.description}
                   Icon={project.icon}
-                  href={link?.href}
-                  cta={link?.label}
+                  links={project.links}
                   background={<ProjectVisual visual={project.visual} />}
                 >
                   <StackLogos stack={project.stack} limit={compact ? 3 : 5} />

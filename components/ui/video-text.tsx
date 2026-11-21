@@ -6,67 +6,23 @@ import React, {
   type ElementType,
   type ReactNode,
 } from "react"
+import { useReducedMotion } from "motion/react"
 
 import { cn } from "@/lib/utils"
 
 export interface VideoTextProps {
-  /**
-   * The video source URL
-   */
   src: string
-  /**
-   * Additional className for the container
-   */
   className?: string
-  /**
-   * Whether to autoplay the video
-   */
   autoPlay?: boolean
-  /**
-   * Whether to mute the video
-   */
   muted?: boolean
-  /**
-   * Whether to loop the video
-   */
   loop?: boolean
-  /**
-   * Whether to preload the video
-   */
   preload?: "auto" | "metadata" | "none"
-  /**
-   * The content to display (will have the video "inside" it)
-   */
   children: ReactNode
-  /**
-   * Font size for the text mask (in viewport width units)
-   * @default 10
-   */
   fontSize?: string | number
-  /**
-   * Font weight for the text mask
-   * @default "bold"
-   */
   fontWeight?: string | number
-  /**
-   * Text anchor for the text mask
-   * @default "middle"
-   */
   textAnchor?: string
-  /**
-   * Dominant baseline for the text mask
-   * @default "middle"
-   */
   dominantBaseline?: string
-  /**
-   * Font family for the text mask
-   * @default "sans-serif"
-   */
   fontFamily?: string
-  /**
-   * The element type to render for the text
-   * @default "div"
-   */
   as?: ElementType
 }
 
@@ -77,7 +33,7 @@ export function VideoText({
   autoPlay = true,
   muted = true,
   loop = true,
-  preload = "auto",
+  preload = "metadata",
   fontSize = 20,
   fontWeight = "bold",
   textAnchor = "middle",
@@ -85,6 +41,7 @@ export function VideoText({
   fontFamily = "sans-serif",
   as: Component = "div",
 }: VideoTextProps) {
+  const reduced = useReducedMotion()
   const [svgMask, setSvgMask] = useState("")
   const content = React.Children.toArray(children).join("")
 
@@ -105,7 +62,6 @@ export function VideoText({
 
   return (
     <Component className={cn(`relative size-full`, className)}>
-      {/* Create a container that masks the video to only show within text */}
       <div
         className="absolute inset-0 flex items-center justify-center"
         style={{
@@ -119,20 +75,26 @@ export function VideoText({
           WebkitMaskPosition: "center",
         }}
       >
-        <video
-          className="h-full w-full object-cover"
-          autoPlay={autoPlay}
-          muted={muted}
-          loop={loop}
-          preload={preload}
-          playsInline
-        >
-          <source src={src} />
-          Your browser does not support the video tag.
-        </video>
+        {reduced ? (
+          <div
+            aria-hidden
+            className="size-full bg-linear-to-br from-foreground/80 via-foreground/50 to-foreground/20"
+          />
+        ) : (
+          <video
+            className="h-full w-full object-cover"
+            autoPlay={autoPlay}
+            muted={muted}
+            loop={loop}
+            preload={preload}
+            playsInline
+          >
+            <source src={src} />
+            Your browser does not support the video tag.
+          </video>
+        )}
       </div>
 
-      {/* Add a backup text element for SEO/accessibility */}
       <span className="sr-only">{content}</span>
     </Component>
   )

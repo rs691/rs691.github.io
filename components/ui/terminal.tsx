@@ -85,6 +85,8 @@ export const AnimatedSpan = ({
     if (!sequence.sequenceStarted) return
     if (hasStarted) return
     if (sequence.activeIndex === itemIndex) {
+      // Sequence driver: sticky start when this item becomes active
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional sticky latch
       setHasStarted(true)
     }
   }, [sequence, hasStarted, itemIndex])
@@ -164,6 +166,7 @@ export const TypingAnimation = ({
 
     if (hasSequence && itemIndex !== null) {
       if (sequenceStarted && !started && sequenceActiveIndex === itemIndex) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- sequence sticky latch
         setStarted(true)
       }
     } else if (!startOnView || isInView) {

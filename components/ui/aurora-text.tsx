@@ -1,6 +1,7 @@
 "use client"
 
 import React, { memo } from "react"
+import { useReducedMotion } from "motion/react"
 
 interface AuroraTextProps {
   children: React.ReactNode
@@ -16,6 +17,12 @@ export const AuroraText = memo(
     colors = ["#FF0080", "#7928CA", "#0070F3", "#38bdf8"],
     speed = 1,
   }: AuroraTextProps) => {
+    const reduced = useReducedMotion()
+
+    if (reduced) {
+      return <span className={className}>{children}</span>
+    }
+
     const gradientStyle = {
       backgroundImage: `linear-gradient(135deg, ${colors.join(", ")}, ${
         colors[0]
@@ -26,10 +33,10 @@ export const AuroraText = memo(
     }
 
     return (
-      <span className={`relative inline-block ${className}`}>
+      <span className={className}>
         <span className="sr-only">{children}</span>
         <span
-          className="animate-aurora relative bg-size-[200%_auto] bg-clip-text text-transparent"
+          className="animate-aurora bg-size-[200%_auto] bg-clip-text text-transparent"
           style={gradientStyle}
           aria-hidden="true"
         >

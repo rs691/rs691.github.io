@@ -11,34 +11,31 @@ import { cn } from "@/lib/utils"
 import { marqueeRows, siteConfig, type MarqueeIcon } from "@/lib/site-config"
 
 const blurLayers = [
-  { blur: "backdrop-blur-[0.5px]", stops: "transparent 0%, black 25%, black 50%, transparent 75%" },
-  { blur: "backdrop-blur-[1px]", stops: "transparent 25%, black 50%, black 75%, transparent 100%" },
-  { blur: "backdrop-blur-[3px]", stops: "transparent 50%, black 75%, black 100%" },
-  { blur: "backdrop-blur-[6px]", stops: "transparent 75%, black 100%" },
+  { blur: "backdrop-blur-[1px]", stops: "transparent 0%, black 25%, black 50%, transparent 75%" },
+  { blur: "backdrop-blur-[2px]", stops: "transparent 25%, black 50%, black 75%, transparent 100%" },
+  { blur: "backdrop-blur-[5px]", stops: "transparent 50%, black 75%, black 100%" },
+  { blur: "backdrop-blur-[10px]", stops: "transparent 75%, black 100%" },
 ]
 
-/**
- * Dial cylinder illusion: soft fade on the left, deeper plunge into blur on the right.
- * Mobile keeps gentler masks so icons stay readable.
- */
-const dialTrackMask = {
+/** Flat band: same soft fade on both left and right edges */
+const trackMask = {
   maskImage:
-    "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 8%, rgba(0,0,0,1) 24%, rgba(0,0,0,1) 58%, rgba(0,0,0,0) 94%)",
+    "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 8%, rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, rgba(0,0,0,0.3) 92%, rgba(0,0,0,0) 100%)",
   WebkitMaskImage:
-    "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 8%, rgba(0,0,0,1) 24%, rgba(0,0,0,1) 58%, rgba(0,0,0,0) 94%)",
+    "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 8%, rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, rgba(0,0,0,0.3) 92%, rgba(0,0,0,0) 100%)",
 } as const
 
-const rightBlurMask = {
-  maskImage: "linear-gradient(to left, rgba(0,0,0,1) 28%, rgba(0,0,0,0) 100%)",
-  WebkitMaskImage:
-    "linear-gradient(to left, rgba(0,0,0,1) 28%, rgba(0,0,0,0) 100%)",
-} as const
+const edgeBlurMask = (side: "left" | "right") => {
+  const axis =
+    side === "left"
+      ? "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 40%, rgba(0,0,0,0) 100%)"
+      : "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 40%, rgba(0,0,0,0) 100%)"
 
-const leftBlurMask = {
-  maskImage: "linear-gradient(to right, rgba(0,0,0,1) 18%, rgba(0,0,0,0) 100%)",
-  WebkitMaskImage:
-    "linear-gradient(to right, rgba(0,0,0,1) 18%, rgba(0,0,0,0) 100%)",
-} as const
+  return {
+    maskImage: axis,
+    WebkitMaskImage: axis,
+  } as const
+}
 
 function IconTile({
   icon: Icon,
@@ -54,7 +51,6 @@ function IconTile({
         "tile-depth relative flex size-(--tile) shrink-0 items-center justify-center rounded-2xl border border-black/12 bg-card transition-transform duration-300 hover:-translate-y-1.5 dark:border-transparent dark:bg-card/80",
         className
       )}
-      style={{ transformStyle: "preserve-3d" }}
     >
       <div
         aria-hidden
@@ -96,7 +92,7 @@ function ProgressiveBlur({
       ))}
       <div
         className={cn(
-          "absolute inset-0 from-transparent via-background/30 via-60% to-background/90 dark:via-background/15 dark:to-background/80",
+          "absolute inset-0 from-transparent via-background/20 via-55% to-background/70 dark:via-background/12 dark:to-background/65",
           side === "bottom" ? "bg-linear-to-b" : "bg-linear-to-t"
         )}
       />
@@ -104,69 +100,39 @@ function ProgressiveBlur({
   )
 }
 
-function DialBlurWalls() {
+function EdgeBlurWalls() {
+  const wall =
+    "pointer-events-none absolute inset-y-0 z-10 w-[clamp(22%,calc(14%+5vw),30%)] backdrop-blur-2xl md:backdrop-blur-3xl"
+
   return (
     <>
-      {/* A — heavy right blur (icons wrap away into the cylinder) */}
       <div
         aria-hidden
         className={cn(
-          "pointer-events-none absolute inset-y-0 right-0 z-10",
-          "w-[clamp(28%,calc(18%+6vw),38%)] bg-linear-to-l from-background via-background/80 to-transparent backdrop-blur-lg",
-          "via-background/84 md:via-background/88 md:backdrop-blur-2xl"
+          wall,
+          "left-0 bg-linear-to-r from-background via-background/80 to-transparent via-45%"
         )}
-        style={rightBlurMask}
+        style={edgeBlurMask("left")}
       />
-      {/* B — left fade: soft blur dissolve instead of a hard vertical cut */}
       <div
         aria-hidden
         className={cn(
-          "pointer-events-none absolute inset-y-0 left-0 z-10",
-          "w-[clamp(22%,calc(14%+5vw),30%)] bg-linear-to-r from-background via-background/80 to-transparent backdrop-blur-md",
-          "via-background/84 md:via-background/88 md:backdrop-blur-xl"
+          wall,
+          "right-0 bg-linear-to-l from-background via-background/80 to-transparent via-45%"
         )}
-        style={leftBlurMask}
+        style={edgeBlurMask("right")}
       />
     </>
   )
 }
 
-/**
- * Fluid dial pose keyed to viewport width (no lg/xl jumps).
- * Soft on mobile → peaks around the ≤1023 sweet spot → eases off on wide
- * screens so the same yaw doesn't look crooked on a wider band.
- * Mild scale(1.03) + slight rotateY nudge so the front of the band reads closer.
- */
-const dialTransform =
-  "rotateX(calc(4deg + 3deg * min(1, max(0, (100vw - 390px) / 480px)) - 1.5deg * min(1, max(0, (100vw - 1024px) / 500px)))) " +
-  "rotateY(calc(-8deg - 10deg * min(1, max(0, (100vw - 390px) / 480px)) + 6deg * min(1, max(0, (100vw - 1024px) / 500px)))) " +
-  "translateZ(calc(-4px - 10px * min(1, max(0, (100vw - 390px) / 480px)) + 5px * min(1, max(0, (100vw - 1024px) / 500px)))) " +
-  "scale(1.03)"
-
-function DialTrack({ className }: { className?: string }) {
+function MarqueeTrack({ className }: { className?: string }) {
   return (
     <div className={cn("relative w-full overflow-hidden", className)}>
-      <div
-        className={cn(
-          "w-full motion-reduce:[perspective:none]",
-          "motion-reduce:[&>div]:[transform:none!important]"
-        )}
-        style={{
-          // Wider viewports get more perspective so the band reads flatter
-          perspective: "clamp(1200px, 110vw, 2200px)",
-          // Slightly more centered so mild scale reads as “front closer”
-          perspectiveOrigin: "46% 48%",
-          ...dialTrackMask,
-        }}
-      >
-        <div
-          className="flex flex-col will-change-transform"
-          style={{ transformStyle: "preserve-3d", transform: dialTransform }}
-        >
-          <MarqueeRows />
-        </div>
+      <div className="w-full" style={trackMask}>
+        <MarqueeRows />
       </div>
-      <DialBlurWalls />
+      <EdgeBlurWalls />
     </div>
   )
 }
@@ -200,7 +166,7 @@ function BottomText({ className }: { className?: string }) {
       <SectionHeading heading={heading} description={description} />
       <StaggerReveal
         inView
-        className="mt-10 flex justify-center md:mt-12"
+        className="mt-14 flex justify-center md:mt-16"
       >
         <StaggerItem className="flex flex-col items-center gap-4 px-6 xs:flex-row xs:gap-5 md:gap-6">
           <Link
@@ -208,7 +174,7 @@ function BottomText({ className }: { className?: string }) {
             className={cn(buttonVariants({ size: "lg" }))}
           >
             {primary.label}
-            <ArrowRight data-icon="inline-end" />
+            <ArrowRight data-icon="inline-end" aria-hidden />
           </Link>
           <Link
             href={secondary.href}
@@ -224,13 +190,13 @@ function BottomText({ className }: { className?: string }) {
   )
 }
 
-function DialWithEntrance({ className }: { className?: string }) {
+function MarqueeWithEntrance({ className }: { className?: string }) {
   return (
     <BlurFade duration={0.7} delay={0} blur="8px" offset={12} direction="up">
       <div className={cn("relative w-full", className)}>
-        <DialTrack />
-        <ProgressiveBlur side="top" className="h-[50%] md:h-[42%]" />
-        <ProgressiveBlur side="bottom" className="h-[50%] md:h-[42%]" />
+        <MarqueeTrack />
+        <ProgressiveBlur side="top" className="h-[48%]" />
+        <ProgressiveBlur side="bottom" className="h-[48%]" />
       </div>
     </BlurFade>
   )
@@ -247,7 +213,7 @@ export function IconMarquee({ top }: { top?: React.ReactNode }) {
           {top}
         </div>
         <div className="relative -my-(--overlap) w-full">
-          <DialWithEntrance />
+          <MarqueeWithEntrance />
         </div>
         <BottomText className="relative" />
       </section>
@@ -262,7 +228,7 @@ export function IconMarquee({ top }: { top?: React.ReactNode }) {
       <div className="relative mx-auto max-w-6xl overflow-hidden">
         <BlurFade duration={0.7} delay={0} blur="8px" offset={12} direction="up">
           <div className="relative pb-24 md:pb-28">
-            <DialTrack />
+            <MarqueeTrack />
             <ProgressiveBlur side="bottom" className="h-3/4" />
           </div>
         </BlurFade>

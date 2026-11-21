@@ -13,14 +13,21 @@ import { siteConfig } from "@/lib/site-config"
 import { cn } from "@/lib/utils"
 
 /** Full end-page contact closer — title optically centered, actions stay low. */
-export function ContactPanel({ className }: { className?: string }) {
+export function ContactPanel({
+  className,
+  id,
+}: {
+  className?: string
+  /** Pass `contact` in document-flow layouts; scrubbed layout uses a track-end anchor. */
+  id?: string
+}) {
   const { heading, videoText, email, links } = siteConfig.footer
   const videoRef = useRef<HTMLDivElement>(null)
   const nearView = useInView(videoRef, { once: true, margin: "400px" })
 
   return (
     <footer
-      id="contact"
+      id={id}
       className={cn(
         "relative flex min-h-svh flex-col overflow-hidden border-t bg-background",
         className
@@ -49,6 +56,7 @@ export function ContactPanel({ className }: { className?: string }) {
                 fontSize={16}
                 fontWeight={900}
                 fontFamily="'Arial Black', 'Helvetica Neue', Arial, sans-serif"
+                preload="metadata"
               >
                 {videoText}
               </VideoText>

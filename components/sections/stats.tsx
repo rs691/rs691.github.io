@@ -6,7 +6,7 @@ import { stats } from "@/lib/site-config"
 
 export function Stats() {
   return (
-    <section aria-label="By the numbers" className="px-5 md:px-6">
+    <section aria-label="By the numbers" className="px-6">
       <dl className="mx-auto grid max-w-5xl grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 md:gap-y-12">
         {stats.map((stat, i) => (
           <BlurFade

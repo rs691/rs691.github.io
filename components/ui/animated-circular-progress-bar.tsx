@@ -9,6 +9,8 @@ interface AnimatedCircularProgressBarProps {
   gaugePrimaryColor: string
   gaugeSecondaryColor: string
   className?: string
+  /** Ring/number ease duration. Use `0ms` for 1:1 scroll tracking. */
+  transitionLength?: string
 }
 
 export function AnimatedCircularProgressBar({
@@ -18,6 +20,7 @@ export function AnimatedCircularProgressBar({
   gaugePrimaryColor,
   gaugeSecondaryColor,
   className,
+  transitionLength = "1s",
 }: AnimatedCircularProgressBarProps) {
   const circumference = 2 * Math.PI * 45
   const percentPx = circumference / 100
@@ -33,7 +36,7 @@ export function AnimatedCircularProgressBar({
           "--percent-to-px": `${percentPx}px`,
           "--gap-percent": "5",
           "--offset-factor": "0",
-          "--transition-length": "1s",
+          "--transition-length": transitionLength,
           "--transition-step": "200ms",
           "--delay": "0s",
           "--percent-to-deg": "3.6deg",

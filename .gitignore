@@ -23,6 +23,11 @@
 *.pem
 .superpowers/
 
+# local agent skill installs (not part of the site)
+.agents/
+skills-lock.json
+rs-REVIEW.md
+
 # debug
 npm-debug.log*
 yarn-debug.log*
