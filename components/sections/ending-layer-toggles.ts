@@ -4,7 +4,7 @@
  */
 export const endingLayerToggles = {
   foregroundGlyphs: true,
-  outlineWord: false,
+  outlineWord: true,
   imageLayer: false,
   quoteMarks: false,
   marquee: false,

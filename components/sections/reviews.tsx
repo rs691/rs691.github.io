@@ -11,6 +11,7 @@ import {
 
 import { SlimFooter } from "@/components/sections/contact"
 import { EndingForegroundGlyphs } from "@/components/sections/ending-foreground-glyphs"
+import { EndingOutlineWord } from "@/components/sections/ending-outline-word"
 import {
   brandHeadingClass,
   SectionHeading,
@@ -320,6 +321,7 @@ export function Reviews() {
       >
         <div className="sticky top-0 isolate flex h-svh flex-col overflow-hidden bg-background">
           <ParallaxBackdrop progress={scrollYProgress} />
+          <EndingOutlineWord progress={scrollYProgress} />
           <EndingForegroundGlyphs progress={scrollYProgress} />
           <TutoringIntro progress={scrollYProgress} />
           <div className="relative min-h-0 flex-1">
