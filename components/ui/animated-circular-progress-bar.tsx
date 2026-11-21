@@ -11,6 +11,8 @@ interface AnimatedCircularProgressBarProps {
   className?: string
   /** Ring/number ease duration. Use `0ms` for 1:1 scroll tracking. */
   transitionLength?: string
+  /** Hide the numeric label (e.g. when a check mark is overlaid). */
+  hideValue?: boolean
 }
 
 export function AnimatedCircularProgressBar({
@@ -21,6 +23,7 @@ export function AnimatedCircularProgressBar({
   gaugeSecondaryColor,
   className,
   transitionLength = "1s",
+  hideValue = false,
 }: AnimatedCircularProgressBarProps) {
   const circumference = 2 * Math.PI * 45
   const percentPx = circumference / 100
@@ -102,12 +105,14 @@ export function AnimatedCircularProgressBar({
           }
         />
       </svg>
-      <span
-        data-current-value={currentPercent}
-        className="animate-in fade-in absolute inset-0 m-auto size-fit delay-(--delay) duration-(--transition-length) ease-linear"
-      >
-        {currentPercent}
-      </span>
+      {hideValue ? null : (
+        <span
+          data-current-value={currentPercent}
+          className="animate-in fade-in absolute inset-0 m-auto size-fit delay-(--delay) duration-(--transition-length) ease-linear"
+        >
+          {currentPercent}
+        </span>
+      )}
     </div>
   )
 }

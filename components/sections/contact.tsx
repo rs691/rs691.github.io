@@ -1,90 +1,53 @@
 "use client"
 
-import { useRef } from "react"
-import { useInView } from "motion/react"
 import { Mail } from "lucide-react"
 
-import { SectionHeading } from "@/components/sections/section-heading"
 import { buttonVariants } from "@/components/ui/button"
-import { FlickeringGrid } from "@/components/ui/flickering-grid"
-import { VideoText } from "@/components/ui/video-text"
-import { assetPath } from "@/lib/paths"
 import { siteConfig } from "@/lib/site-config"
 import { cn } from "@/lib/utils"
 
-/** Full end-page contact closer — title optically centered, actions stay low. */
-export function ContactPanel({
+/**
+ * Traditional slim footer bar — email, links, and copyright.
+ * Used at the rest position of the ending sequence and in the
+ * reduced-motion document-flow layout.
+ */
+export function SlimFooter({
   className,
   id,
 }: {
   className?: string
-  /** Pass `contact` in document-flow layouts; scrubbed layout uses a track-end anchor. */
   id?: string
 }) {
-  const { heading, videoText, email, links } = siteConfig.footer
-  const videoRef = useRef<HTMLDivElement>(null)
-  const nearView = useInView(videoRef, { once: true, margin: "400px" })
+  const { email, links } = siteConfig.footer
 
   return (
     <footer
       id={id}
       className={cn(
-        "relative flex min-h-svh flex-col overflow-hidden border-t bg-background",
+        "relative border-t border-black/10 bg-card/90 shadow-[0_-12px_40px_-16px_rgba(0,0,0,.28)] backdrop-blur-md",
+        "dark:border-white/10 dark:bg-background/85 dark:shadow-[0_-16px_48px_-16px_rgba(0,0,0,.55)]",
+        // Leave a clear lane for the fixed scroll dial in the lower-right.
+        "px-6 py-4 pr-24 md:px-8 md:pr-28",
         className
       )}
     >
-      <FlickeringGrid
-        aria-hidden
-        squareSize={4}
-        gridGap={6}
-        maxOpacity={0.2}
-        flickerChance={0.1}
-        color="rgb(110, 110, 110)"
-        className="absolute inset-0 mask-[radial-gradient(ellipse_at_center,black,transparent_75%)]"
-      />
-
-      {/* Title sits on the viewport midline; VideoText hangs just above it. */}
-      <div className="relative flex min-h-0 flex-1 flex-col items-center justify-center px-6">
-        <div className="relative flex w-full max-w-5xl flex-col items-center">
-          <div
-            ref={videoRef}
-            className="absolute bottom-full left-1/2 mb-1 w-full -translate-x-1/2 h-24 xs:mb-2 xs:h-32 md:mb-3 md:h-44 lg:h-52"
-          >
-            {nearView ? (
-              <VideoText
-                src={assetPath("/tunnelBack.mp4")}
-                fontSize={16}
-                fontWeight={900}
-                fontFamily="'Arial Black', 'Helvetica Neue', Arial, sans-serif"
-                preload="metadata"
-              >
-                {videoText}
-              </VideoText>
-            ) : (
-              <span className="sr-only">{videoText}</span>
-            )}
-          </div>
-          <SectionHeading heading={heading} className="px-0" />
-        </div>
-      </div>
-
-      <div className="relative mx-auto flex w-full max-w-xl flex-col items-center px-6 pt-4 pb-10 text-center md:pb-14">
+      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-3 text-center sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-6 sm:text-left">
         <a
           href={`mailto:${email}`}
-          className={cn(buttonVariants({ size: "lg" }), "gap-2")}
+          className={cn(buttonVariants({ size: "sm" }), "gap-2")}
         >
           <Mail data-icon="inline-start" aria-hidden />
           {email}
         </a>
         <nav
           aria-label="Footer"
-          className="mt-8 flex w-full flex-wrap items-center justify-evenly gap-y-2 text-sm text-muted-foreground md:mt-10 md:text-base"
+          className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-muted-foreground"
         >
           <a
             href={siteConfig.footer.secondaryCta.href}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex min-h-11 items-center px-2 transition-colors hover:text-foreground"
+            className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-foreground"
           >
             {siteConfig.footer.secondaryCta.label}
           </a>
@@ -96,13 +59,13 @@ export function ContactPanel({
                 href={link.href}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-h-11 items-center px-2 transition-colors hover:text-foreground"
+                className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-foreground"
               >
                 {link.label}
               </a>
             ))}
         </nav>
-        <p className="mt-8 text-sm text-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           &copy; 2026 {siteConfig.name}
         </p>
       </div>
