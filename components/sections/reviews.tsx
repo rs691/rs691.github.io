@@ -319,7 +319,7 @@ export function Reviews() {
         className="relative"
         style={{ height: `${BEATS * 100}svh` }}
       >
-        <div className="sticky top-0 isolate flex h-svh flex-col overflow-hidden bg-background">
+        <div className="sticky top-0 isolate flex h-svh flex-col overflow-hidden">
           <ParallaxBackdrop progress={scrollYProgress} />
           <EndingOutlineWord progress={scrollYProgress} />
           <EndingForegroundGlyphs progress={scrollYProgress} />

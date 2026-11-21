@@ -15,6 +15,11 @@ const SNAP_TARGETS = [
 
 let lenisRef: Lenis | null = null
 
+/** Live Lenis instance, if smooth scroll is active. */
+export function getLenis(): Lenis | null {
+  return lenisRef
+}
+
 /**
  * Scroll to the settled ending (heading + slim footer).
  * `#contact` is the last viewport of the reviews track, so block-start

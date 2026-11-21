@@ -36,7 +36,7 @@ const WORDS: WordSpec[] = [
     direction: 1,
     // Intro holds 0–0.2, then yields to TESTIMONIALS.
     opacityInput: [0, 0.14, 0.24, 0.3],
-    opacityOutput: [0.2, 0.2, 0, 0],
+    opacityOutput: [0.1, 0.1, 0, 0],
     className: "tracking-[0.14em] text-[22vw] md:text-[15vw]",
   },
   {
@@ -121,7 +121,7 @@ export function EndingOutlineWord({
         <div className="absolute inset-0 flex items-center justify-center">
           <span
             className="font-heading text-[18vw] font-bold tracking-[0.14em] text-transparent uppercase leading-none whitespace-nowrap md:text-[15vw]"
-            style={{ WebkitTextStroke: "0.012em #a855f7", opacity: 0.12 }}
+            style={{ WebkitTextStroke: "0.012em #a855f7", opacity: 0.08 }}
           >
             TUTORING
           </span>

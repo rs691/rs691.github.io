@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import { Geist_Mono, Inter, Noto_Sans, Playfair_Display } from "next/font/google"
 
 import "./globals.css"
+import { AmbientOutlineWords } from "@/components/ambient-outline-words"
 import { SkipLink } from "@/components/skip-link"
 import { SmoothScroll } from "@/components/smooth-scroll"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -65,7 +66,10 @@ export default function RootLayout({
         <SkipLink />
         <ThemeProvider>
           <SmoothScroll>
-            <TooltipProvider>{children}</TooltipProvider>
+            <AmbientOutlineWords />
+            <div className="relative z-10">
+              <TooltipProvider>{children}</TooltipProvider>
+            </div>
           </SmoothScroll>
         </ThemeProvider>
       </body>
