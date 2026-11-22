@@ -3,6 +3,8 @@ import { Geist_Mono, Inter, Noto_Sans, Playfair_Display } from "next/font/google
 
 import "./globals.css"
 import { AmbientOutlineWords } from "@/components/ambient-outline-words"
+import { DepthLayerControls } from "@/components/depth-layer-controls"
+import { DepthLayerProvider } from "@/components/depth-layer-provider"
 import { SkipLink } from "@/components/skip-link"
 import { SmoothScroll } from "@/components/smooth-scroll"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -66,10 +68,13 @@ export default function RootLayout({
         <SkipLink />
         <ThemeProvider>
           <SmoothScroll>
-            <AmbientOutlineWords />
-            <div className="relative z-10">
-              <TooltipProvider>{children}</TooltipProvider>
-            </div>
+            <DepthLayerProvider>
+              <AmbientOutlineWords />
+              <div className="relative z-10">
+                <TooltipProvider>{children}</TooltipProvider>
+              </div>
+              <DepthLayerControls />
+            </DepthLayerProvider>
           </SmoothScroll>
         </ThemeProvider>
       </body>

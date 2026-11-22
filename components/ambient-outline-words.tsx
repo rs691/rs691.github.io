@@ -3,14 +3,15 @@
 import { useEffect, useRef } from "react"
 import { useReducedMotion } from "motion/react"
 
-import { endingLayerToggles } from "@/components/sections/ending-layer-toggles"
+import { useDepthLayers } from "@/components/depth-layer-provider"
 import { getLenis } from "@/components/smooth-scroll"
 import { cn } from "@/lib/utils"
 
 /**
- * Fixed, site-wide far-field outline words. They drift on their own,
- * get a gentle push from scroll velocity, and leave to re-enter from
- * another edge. Mounted once at the root, behind page content.
+ * Far-field, site-wide outline words. Slow leftward cruise in the
+ * outer gutters and top corners (about 0.25–0.35x), behind all content.
+ * They stay out of the center reading column, get a gentle scroll
+ * nudge, and re-enter from another edge. Paused when the tab is hidden.
  */
 
 const WORDS = [
@@ -33,8 +34,8 @@ const WORDS = [
 
 const COLORS = ["#a855f7", "#00FFF1", "#ff2975", "#0070F3"] as const
 
-type Edge = "left" | "right" | "top" | "bottom"
-type Travel = "horizontal" | "diagonal" | "drop"
+type Edge = "left" | "right" | "top"
+type Travel = "gutter-drop" | "gutter-rise" | "top-corner"
 
 type Walker = {
   el: HTMLSpanElement
@@ -75,6 +76,27 @@ function unusedWord(active: Set<string>, preferLong: boolean): string {
   return pick(pool.length > 0 ? pool : WORDS)
 }
 
+function gutterRatio(vw: number) {
+  return vw < 768 ? 0.2 : 0.25
+}
+
+function leftGutterX(vw: number, w: number) {
+  const gutter = vw * gutterRatio(vw)
+  const cx = rand(-w * 0.2, gutter * 0.7)
+  return cx - w / 2
+}
+
+function rightGutterX(vw: number, w: number) {
+  const gutter = vw * gutterRatio(vw)
+  const cx = rand(vw - gutter * 0.7, vw + w * 0.2)
+  return cx - w / 2
+}
+
+function topCornerY(vh: number, h: number) {
+  const cy = rand(vh * 0.04, vh * 0.2)
+  return cy - h / 2
+}
+
 function plan(
   vw: number,
   vh: number,
@@ -82,54 +104,57 @@ function plan(
   h: number,
   prefer: Edge | null
 ): { x: number; y: number; vx: number; vy: number } {
-  const travel: Travel =
-    prefer === "top" || Math.random() < 0.28
-      ? "drop"
-      : Math.random() < 0.5
-        ? "horizontal"
-        : "diagonal"
-
   const pad = 48
-  const duration = rand(20000, 38000)
-  const midY = rand(vh * 0.12, Math.max(vh * 0.14, vh - h - vh * 0.12))
-  const midX = rand(vw * 0.08, Math.max(vw * 0.1, vw - w - vw * 0.08))
+  // Far layer: slow. ~28–48s to cross a gutter or drop the viewport.
+  const duration = rand(28000, 48000)
+  const side: "left" | "right" =
+    prefer === "left" ? "left" : prefer === "right" ? "right" : Math.random() < 0.5 ? "left" : "right"
 
-  if (travel === "drop") {
-    const drift = rand(-0.22, 0.22) * vw
-    const dur = rand(22000, 40000)
+  const kinds: Travel[] =
+    prefer === "top"
+      ? ["top-corner", "gutter-drop"]
+      : prefer === "left" || prefer === "right"
+        ? ["gutter-drop", "gutter-rise"]
+        : ["gutter-drop", "gutter-rise", "top-corner"]
+  const travel = pick(kinds)
+
+  const startX = side === "left" ? leftGutterX(vw, w) : rightGutterX(vw, w)
+
+  if (travel === "top-corner") {
+    const y = topCornerY(vh, h)
+    // Always cruise left (far-layer direction), staying in this corner.
+    const drift = side === "left" ? rand(-gutterRatio(vw) * vw * 0.5, 0) : rand(-gutterRatio(vw) * vw * 0.8, 0)
+    return { x: startX, y, vx: drift / duration, vy: rand(-0.004, 0.004) }
+  }
+
+  if (travel === "gutter-rise") {
+    const x = startX
+    const y = vh + pad
     return {
-      x: midX,
-      y: -h - pad,
-      vx: drift / dur,
-      vy: (vh + h + pad * 2) / dur,
+      x,
+      y,
+      vx: (side === "left" ? -1 : 1) * rand(0, 0.006),
+      vy: -(vh + h + pad * 2) / duration,
     }
   }
 
-  const fromLeft =
-    prefer === "left" ? true : prefer === "right" ? false : Math.random() < 0.5
-  const startX = fromLeft ? -w - pad : vw + pad
-  const endX = fromLeft ? vw + pad : -w - pad
-  const startY = midY
-  const endY =
-    travel === "diagonal"
-      ? Math.min(Math.max(midY + rand(-vh * 0.35, vh * 0.35), -h), vh)
-      : midY + rand(-vh * 0.06, vh * 0.06)
-
+  // gutter-drop (and default)
   return {
     x: startX,
-    y: startY,
-    vx: (endX - startX) / duration,
-    vy: (endY - startY) / duration,
+    y: -h - pad,
+    vx: (side === "left" ? -1 : 1) * rand(0, 0.006),
+    vy: (vh + h + pad * 2) / duration,
   }
 }
 
 function styleWord(el: HTMLSpanElement) {
   const mobile = window.innerWidth < 768
-  const size = mobile ? rand(22, 32) : rand(12, 20)
-  const blur = mobile ? rand(1, 2) : rand(1, 3)
+  // Far layer: a little smaller, blurrier, fainter than mid/near layers.
+  const size = mobile ? rand(16, 24) : rand(9, 14)
+  const blur = mobile ? rand(1.5, 2.5) : rand(2, 3)
   const color = pick(COLORS)
   const tilt = rand(-8, 8)
-  const opacity = mobile ? rand(0.09, 0.12) : rand(0.07, 0.12)
+  const opacity = mobile ? rand(0.08, 0.11) : rand(0.06, 0.1)
   el.className = cn(
     "pointer-events-none absolute top-0 left-0 font-heading font-bold uppercase leading-none whitespace-nowrap select-none",
     "will-change-transform text-transparent"
@@ -153,13 +178,12 @@ function applyTransform(
   const { el, x, y, width, height, baseOpacity } = walker
   const cx = x + width / 2
   const cy = y + height / 2
-  const edge = Math.max(
-    Math.min(1, Math.abs(cx / vw - 0.5) * 2),
-    Math.min(1, Math.abs(cy / vh - 0.5) * 1.4) * 0.65
-  )
-  const dim = window.innerWidth < 768 ? 0.85 + 0.15 * edge : 0.7 + 0.3 * edge
+  const gutter = gutterRatio(vw)
+  const inCenterX = Math.abs(cx / vw - 0.5) < 0.5 - gutter
+  const inReadingY = cy / vh > 0.22 && cy / vh < 0.88
+  const clearance = inCenterX && inReadingY ? 0.28 : 1
   const tilt = Number(el.dataset.tilt ?? 0)
-  el.style.opacity = String(baseOpacity * dim * endingFade)
+  el.style.opacity = String(baseOpacity * clearance * endingFade)
   el.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${tilt}deg)`
 }
 
@@ -175,10 +199,16 @@ function isOffscreen(walker: Walker, vw: number, vh: number) {
 
 export function AmbientOutlineWords() {
   const reduced = useReducedMotion()
+  const { layers } = useDepthLayers()
   const layerRef = useRef<HTMLDivElement>(null)
+  const outlineOnRef = useRef(layers.outlineWord)
 
   useEffect(() => {
-    if (!endingLayerToggles.ambientOutline) return
+    outlineOnRef.current = layers.outlineWord
+  }, [layers.outlineWord])
+
+  useEffect(() => {
+    if (!layers.ambientOutline) return
     if (reduced) return
     const layer = layerRef.current
     if (!layer) return
@@ -222,10 +252,9 @@ export function AmbientOutlineWords() {
       walker.baseVx = path.vx
       walker.baseVy = path.vy
       if (immediate) {
-        // Already in flight so the first paint is not empty.
-        const ahead = rand(0.18, 0.52)
-        walker.x += walker.baseVx * ahead * 28000
-        walker.y += walker.baseVy * ahead * 28000
+        const ahead = rand(0.2, 0.55)
+        walker.x += walker.baseVx * ahead * 36000
+        walker.y += walker.baseVy * ahead * 36000
       }
       activeText.add(text)
       walkers.push(walker)
@@ -265,12 +294,12 @@ export function AmbientOutlineWords() {
       const vw = window.innerWidth
       const vh = window.innerHeight
       const velocity = getLenis()?.velocity ?? 0
-      // Lenis velocity is px-scale; keep the added push calm.
       const targetY = Math.max(-1.15, Math.min(1.15, velocity * 0.035))
       const targetX = Math.max(-0.45, Math.min(0.45, velocity * 0.01))
       scrollBoostY += (targetY - scrollBoostY) * 0.12
       scrollBoostX += (targetX - scrollBoostX) * 0.1
-      const wantFade = isEndingPinned() ? 0 : 1
+      // Only yield the ending if the beat-specific outline is also on.
+      const wantFade = isEndingPinned() && outlineOnRef.current ? 0 : 1
       endingFade += (wantFade - endingFade) * 0.06
 
       if (walkers.length + pendingSpawns < capacity()) {
@@ -300,9 +329,9 @@ export function AmbientOutlineWords() {
       for (const walker of walkers) walker.el.remove()
       walkers.length = 0
     }
-  }, [reduced])
+  }, [reduced, layers.ambientOutline])
 
-  if (!endingLayerToggles.ambientOutline) return null
+  if (!layers.ambientOutline) return null
 
   if (reduced) {
     return (
@@ -311,7 +340,7 @@ export function AmbientOutlineWords() {
         className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
       >
         <span
-          className="absolute top-[38%] left-[8%] font-heading text-[16vw] font-bold tracking-[0.12em] text-transparent uppercase leading-none select-none md:text-[12vw]"
+          className="absolute top-[8%] left-[1%] font-heading text-[14vw] font-bold tracking-[0.12em] text-transparent uppercase leading-none select-none md:text-[10vw]"
           style={{
             WebkitTextStroke: "0.012em #a855f7",
             opacity: 0.08,
