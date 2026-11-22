@@ -3,29 +3,31 @@
  * so stacked layers read as real parallax. Toggle them independently
  * or apply a preset to compare combinations. Stubs are no-ops until built.
  *
- * Layer              | z    | speed         | direction           | blur      | opacity
- * -------------------|------|---------------|---------------------|-----------|----------
- * Ambient words      | 0    | ~0.25–0.35x   | left (slow cruise)  | 2–3px     | 0.06–0.10
- * Ending outline     | 1    | 0.40–0.55x    | right               | 0–1px     | 0.08–0.12
- * Back glyphs        | 5    | 0.70–0.95x    | rise (up)           | 1.5–2.5px | 0.16–0.22
- * Front glyphs       | 20   | 1.45–1.85x    | fall / right        | 0         | 0.28–0.38
- * Heading / footer   | 30   | ~1.2x         | rise, then settle   | 0         | 1
- * Image layer        | —    | stub          | —                   | —         | off
- * Quote marks        | —    | stub          | —                   | —         | off
- * Marquee            | —    | stub          | —                   | —         | off
+ * Layer              | z    | speed         | direction            | blur      | opacity
+ * -------------------|------|---------------|----------------------|-----------|----------
+ * Ambient words      | 0    | ~0.25–0.35x   | left (slow cruise)   | 2–3px     | off by default
+ * Ending outline     | 1    | 0.40–0.55x    | right                | 0–1px     | off by default
+ * Far glyphs         | 1    | ~0.45–0.58x   | up + left            | 2–3px     | 0.16–0.22
+ * Mid glyphs         | 2    | ~0.95–1.10x   | up + right / side    | 0.6–1px   | 0.24–0.30
+ * Near glyphs        | 3    | ~1.55–1.85x   | fall / opposite      | 0         | 0.30–0.38
+ * Heading / footer   | 30   | ~1.2x         | rise, then settle    | 0         | 1
+ * Image layer        | —    | stub          | —                    | —         | off
+ * Quote marks        | —    | stub          | —                    | —         | off
+ * Marquee            | —    | stub          | —                    | —         | off
  *
- * Safe zone: ambient words and glyphs stay in the outer ~25% gutters
- * and the top corners, leaving the center reading column mostly clear.
+ * Glyphs are site-wide, parked in the outer ~25% gutters and corners
+ * so the center reading column stays clear. Default preset: glyphs-only.
  *
- * Presets: minimal (front glyphs), words (ambient only), glyphs+words,
- * all (every switch, including no-op stubs).
+ * Presets: glyphs-only (default, all three glyph bands), minimal (near
+ * glyphs), words (ambient only), glyphs+words, all (includes stubs).
  */
 
 export const DEPTH_LAYER_KEYS = [
   "ambientOutline",
   "outlineWord",
-  "backGlyphs",
-  "frontGlyphs",
+  "farGlyphs",
+  "midGlyphs",
+  "nearGlyphs",
   "imageLayer",
   "quoteMarks",
   "marquee",
@@ -38,8 +40,9 @@ export type DepthLayerToggles = Record<DepthLayerKey, boolean>
 export const DEPTH_LAYER_LABELS: Record<DepthLayerKey, string> = {
   ambientOutline: "Ambient words",
   outlineWord: "Ending outline",
-  backGlyphs: "Back glyphs",
-  frontGlyphs: "Front glyphs",
+  farGlyphs: "Far glyphs",
+  midGlyphs: "Mid glyphs",
+  nearGlyphs: "Near glyphs",
   imageLayer: "Image layer (stub)",
   quoteMarks: "Quote marks (stub)",
   marquee: "Marquee (stub)",
@@ -54,8 +57,9 @@ export const DEPTH_LAYER_STUBS: readonly DepthLayerKey[] = [
 const off: DepthLayerToggles = {
   ambientOutline: false,
   outlineWord: false,
-  backGlyphs: false,
-  frontGlyphs: false,
+  farGlyphs: false,
+  midGlyphs: false,
+  nearGlyphs: false,
   imageLayer: false,
   quoteMarks: false,
   marquee: false,
@@ -63,18 +67,24 @@ const off: DepthLayerToggles = {
 
 export const depthLayerDefaults: DepthLayerToggles = {
   ...off,
-  ambientOutline: true,
-  outlineWord: true,
-  backGlyphs: true,
-  frontGlyphs: true,
+  farGlyphs: true,
+  midGlyphs: true,
+  nearGlyphs: true,
 }
 
 export const depthLayerPresets = {
-  minimal: { ...off, frontGlyphs: true },
+  "glyphs-only": { ...depthLayerDefaults },
+  minimal: { ...off, nearGlyphs: true },
   words: { ...off, ambientOutline: true },
-  "glyphs+words": { ...depthLayerDefaults },
+  "glyphs+words": {
+    ...depthLayerDefaults,
+    ambientOutline: true,
+    outlineWord: true,
+  },
   all: {
     ...depthLayerDefaults,
+    ambientOutline: true,
+    outlineWord: true,
     imageLayer: true,
     quoteMarks: true,
     marquee: true,
@@ -84,12 +94,15 @@ export const depthLayerPresets = {
 export type DepthLayerPreset = keyof typeof depthLayerPresets
 
 export const DEPTH_LAYER_PRESET_LABELS: Record<DepthLayerPreset, string> = {
+  "glyphs-only": "glyphs-only",
   minimal: "minimal",
   words: "words",
   "glyphs+words": "glyphs+words",
   all: "all",
 }
 
+/** Bump this to ignore stale localStorage from earlier default mixes. */
+export const DEPTH_LAYERS_STORAGE_VERSION = 2
 export const DEPTH_LAYERS_STORAGE_KEY = "rs-depth-layers"
 
 export function isLiveEditorEnabled() {
@@ -100,11 +113,24 @@ export function isLiveEditorEnabled() {
   )
 }
 
+function pack(layers: DepthLayerToggles) {
+  return JSON.stringify({ v: DEPTH_LAYERS_STORAGE_VERSION, ...layers })
+}
+
+function isCurrentVersion(parsed: unknown): parsed is Record<string, unknown> {
+  return (
+    !!parsed &&
+    typeof parsed === "object" &&
+    (parsed as { v?: unknown }).v === DEPTH_LAYERS_STORAGE_VERSION
+  )
+}
+
 export function parseDepthLayers(raw: string | null): DepthLayerToggles {
   const next = { ...depthLayerDefaults }
   if (!raw) return next
   try {
-    const parsed = JSON.parse(raw) as Partial<DepthLayerToggles>
+    const parsed: unknown = JSON.parse(raw)
+    if (!isCurrentVersion(parsed)) return { ...depthLayerDefaults }
     for (const key of DEPTH_LAYER_KEYS) {
       if (typeof parsed[key] === "boolean") next[key] = parsed[key]
     }
@@ -124,6 +150,21 @@ export function readDepthLayers(): DepthLayerToggles {
   try {
     const raw = localStorage.getItem(DEPTH_LAYERS_STORAGE_KEY)
     if (raw === snapshotKey) return snapshot
+    let parsedUnknown: unknown = null
+    if (raw) {
+      try {
+        parsedUnknown = JSON.parse(raw)
+      } catch {
+        parsedUnknown = null
+      }
+    }
+    if (raw && !isCurrentVersion(parsedUnknown)) {
+      const packed = pack(depthLayerDefaults)
+      localStorage.setItem(DEPTH_LAYERS_STORAGE_KEY, packed)
+      snapshot = { ...depthLayerDefaults }
+      snapshotKey = packed
+      return snapshot
+    }
     snapshot = parseDepthLayers(raw)
     snapshotKey = raw
     return snapshot
@@ -136,7 +177,7 @@ export function writeDepthLayers(next: DepthLayerToggles) {
   if (typeof window === "undefined") return
   snapshot = next
   try {
-    const raw = JSON.stringify(next)
+    const raw = pack(next)
     snapshotKey = raw
     localStorage.setItem(DEPTH_LAYERS_STORAGE_KEY, raw)
   } catch {

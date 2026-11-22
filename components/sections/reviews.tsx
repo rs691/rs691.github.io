@@ -10,7 +10,6 @@ import {
 } from "motion/react"
 
 import { SlimFooter } from "@/components/sections/contact"
-import { EndingForegroundGlyphs } from "@/components/sections/ending-foreground-glyphs"
 import { EndingOutlineWord } from "@/components/sections/ending-outline-word"
 import {
   brandHeadingClass,
@@ -50,9 +49,9 @@ function ParallaxBackdrop({ progress }: { progress: MotionValue<number> }) {
         style={{ y, scale }}
         className="absolute inset-[-18%]"
       >
-        <div className="absolute top-[8%] left-1/2 size-[90vmin] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(168,85,247,0.22),transparent_64%)]" />
-        <div className="absolute top-[30%] left-[8%] size-[55vmin] rounded-full bg-[radial-gradient(circle,rgba(255,41,117,0.16),transparent_70%)]" />
-        <div className="absolute right-[6%] bottom-[12%] size-[60vmin] rounded-full bg-[radial-gradient(circle,rgba(0,255,241,0.12),transparent_70%)]" />
+        <div className="absolute top-[8%] left-1/2 size-[90vmin] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(109,40,217,0.13),transparent_64%)] dark:bg-[radial-gradient(circle,rgba(168,85,247,0.22),transparent_64%)]" />
+        <div className="absolute top-[30%] left-[8%] size-[55vmin] rounded-full bg-[radial-gradient(circle,rgba(190,24,93,0.10),transparent_70%)] dark:bg-[radial-gradient(circle,rgba(255,41,117,0.16),transparent_70%)]" />
+        <div className="absolute right-[6%] bottom-[12%] size-[60vmin] rounded-full bg-[radial-gradient(circle,rgba(15,118,110,0.10),transparent_70%)] dark:bg-[radial-gradient(circle,rgba(0,255,241,0.12),transparent_70%)]" />
       </motion.div>
     </div>
   )
@@ -322,7 +321,6 @@ export function Reviews() {
         <div className="sticky top-0 isolate flex h-svh flex-col overflow-hidden">
           <ParallaxBackdrop progress={scrollYProgress} />
           <EndingOutlineWord progress={scrollYProgress} />
-          <EndingForegroundGlyphs progress={scrollYProgress} />
           <TutoringIntro progress={scrollYProgress} />
           <div className="relative min-h-0 flex-1">
             {items.map((review, index) => (

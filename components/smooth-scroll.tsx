@@ -20,6 +20,16 @@ export function getLenis(): Lenis | null {
   return lenisRef
 }
 
+declare global {
+  interface Window {
+    getLenis?: typeof getLenis
+  }
+}
+
+if (typeof window !== "undefined") {
+  window.getLenis = getLenis
+}
+
 /**
  * Scroll to the settled ending (heading + slim footer).
  * `#contact` is the last viewport of the reviews track, so block-start
