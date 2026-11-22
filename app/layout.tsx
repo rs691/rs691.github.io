@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import { Geist_Mono, Inter, Noto_Sans, Playfair_Display } from "next/font/google"
 
 import "./globals.css"
+import { AmbientAurora } from "@/components/ambient-aurora"
 import { AmbientGlyphs } from "@/components/ambient-glyphs"
 import { AmbientOutlineWords } from "@/components/ambient-outline-words"
 import { DepthLayerControls } from "@/components/depth-layer-controls"
@@ -70,6 +71,7 @@ export default function RootLayout({
         <ThemeProvider>
           <SmoothScroll>
             <DepthLayerProvider>
+              <AmbientAurora />
               <AmbientOutlineWords />
               <AmbientGlyphs />
               <div className="relative z-10">

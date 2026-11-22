@@ -5,6 +5,7 @@
  *
  * Layer              | z    | speed         | direction            | blur      | opacity
  * -------------------|------|---------------|----------------------|-----------|----------
+ * Aurora background  | 0    | ~0.22–0.28x   | slow rise / drift    | soft CSS  | on by default
  * Ambient words      | 0    | ~0.25–0.35x   | left (slow cruise)   | 2–3px     | off by default
  * Ending outline     | 1    | 0.40–0.55x    | right                | 0–1px     | off by default
  * Far glyphs         | 1    | ~0.45–0.58x   | up + left            | 2–3px     | 0.16–0.22
@@ -16,13 +17,17 @@
  * Marquee            | —    | stub          | —                    | —         | off
  *
  * Glyphs are site-wide, parked in the outer ~25% gutters and corners
- * so the center reading column stays clear. Default preset: glyphs-only.
+ * so the center reading column stays clear. The aurora is the deepest
+ * field: faint at the hero, building through mid-page so the ending
+ * orbs feel like a continuation, not a sudden bloom.
+ * Default preset: glyphs-only (aurora + all three glyph bands).
  *
- * Presets: glyphs-only (default, all three glyph bands), minimal (near
- * glyphs), words (ambient only), glyphs+words, all (includes stubs).
+ * Presets: glyphs-only (default), minimal (near glyphs), words
+ * (ambient only), glyphs+words, all (includes stubs).
  */
 
 export const DEPTH_LAYER_KEYS = [
+  "aurora",
   "ambientOutline",
   "outlineWord",
   "farGlyphs",
@@ -38,6 +43,7 @@ export type DepthLayerKey = (typeof DEPTH_LAYER_KEYS)[number]
 export type DepthLayerToggles = Record<DepthLayerKey, boolean>
 
 export const DEPTH_LAYER_LABELS: Record<DepthLayerKey, string> = {
+  aurora: "Aurora background",
   ambientOutline: "Ambient words",
   outlineWord: "Ending outline",
   farGlyphs: "Far glyphs",
@@ -55,6 +61,7 @@ export const DEPTH_LAYER_STUBS: readonly DepthLayerKey[] = [
 ]
 
 const off: DepthLayerToggles = {
+  aurora: false,
   ambientOutline: false,
   outlineWord: false,
   farGlyphs: false,
@@ -67,6 +74,7 @@ const off: DepthLayerToggles = {
 
 export const depthLayerDefaults: DepthLayerToggles = {
   ...off,
+  aurora: true,
   farGlyphs: true,
   midGlyphs: true,
   nearGlyphs: true,
@@ -102,7 +110,7 @@ export const DEPTH_LAYER_PRESET_LABELS: Record<DepthLayerPreset, string> = {
 }
 
 /** Bump this to ignore stale localStorage from earlier default mixes. */
-export const DEPTH_LAYERS_STORAGE_VERSION = 2
+export const DEPTH_LAYERS_STORAGE_VERSION = 3
 export const DEPTH_LAYERS_STORAGE_KEY = "rs-depth-layers"
 
 export function isLiveEditorEnabled() {
