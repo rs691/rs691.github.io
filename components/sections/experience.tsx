@@ -151,16 +151,23 @@ export function Experience() {
         </div>
 
         <BlurFade inView direction="up" offset={16}>
-          <div className="mt-14 flex flex-col gap-4 rounded-2xl border border-black/10 bg-card p-6 shadow-[inset_0_1px_0_rgba(255,255,255,1),0_10px_28px_-10px_rgba(0,0,0,.14),0_24px_48px_-20px_rgba(0,0,0,.1)] md:flex-row md:flex-wrap md:items-start md:gap-x-8 md:gap-y-4 dark:border-white/10 dark:shadow-none">
-            <GraduationCap className="size-6 shrink-0 text-muted-foreground md:mt-0.5" />
-            {education.map((item) => (
-              <div key={item.degree} className="flex min-w-[12rem] flex-col">
-                <span className="font-medium">{item.degree}</span>
-                <span className="text-sm text-muted-foreground">
-                  {item.school} · {item.date}
-                </span>
-              </div>
-            ))}
+          <div className="mt-14 rounded-2xl border border-black/10 bg-card p-6 shadow-[inset_0_1px_0_rgba(255,255,255,1),0_10px_28px_-10px_rgba(0,0,0,.14),0_24px_48px_-20px_rgba(0,0,0,.1)] dark:border-white/10 dark:shadow-none">
+            <ul className="grid gap-6 sm:grid-cols-3">
+              {education.map((item) => (
+                <li key={item.degree} className="flex items-start gap-3">
+                  <GraduationCap
+                    aria-hidden
+                    className="mt-0.5 size-5 shrink-0 text-muted-foreground"
+                  />
+                  <div className="flex min-w-0 flex-col">
+                    <span className="font-medium">{item.degree}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {item.school} · {item.date}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         </BlurFade>
       </div>

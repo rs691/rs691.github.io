@@ -13,10 +13,10 @@ import { useDepthLayers } from "@/components/depth-layer-provider"
 import { getLenis } from "@/components/smooth-scroll"
 
 const CELL = 32
-const MAX_PULSES = 6
-const MAX_GLOWS = 12
-const SPAWN_MIN = 0.7
-const SPAWN_MAX = 1.6
+const MAX_PULSES = 16
+const MAX_GLOWS = 24
+const SPAWN_MIN = 0.16
+const SPAWN_MAX = 0.42
 
 type Tone = "cyan" | "emerald" | "amber"
 
@@ -59,7 +59,7 @@ function pickTone(): Tone {
 }
 
 function pickLane(count: number, favorEdges: boolean) {
-  if (!favorEdges || count < 6 || Math.random() > 0.72) {
+  if (!favorEdges || count < 6 || Math.random() > 0.4) {
     return randInt(0, count - 1)
   }
   const edge = Math.max(2, Math.floor(count * 0.22))

@@ -9,217 +9,144 @@ import {
   type MotionValue,
 } from "motion/react"
 
-import { useDepthLayers } from "@/components/depth-layer-provider"
 import { SlimFooter } from "@/components/sections/contact"
 import { EndingOutlineWord } from "@/components/sections/ending-outline-word"
+import { ParallaxBackdrop, ReviewsPinned } from "@/components/sections/reviews-pinned"
 import {
   brandHeadingClass,
   SectionHeading,
-  sectionBodyClass,
 } from "@/components/sections/section-heading"
+import { ScrollVelocityRow } from "@/components/ui/scroll-velocity"
 import { reviews, siteConfig, type Review } from "@/lib/site-config"
 import { cn } from "@/lib/utils"
 
-/** Intro + 3 testimonials + landing. Track height is BEATS * 100svh so
- *  progress 1 is exactly the moment the heading and slim footer settle. */
-const BEATS = 5
+/**
+ * Flip to "pinned" to restore the original 5-beat, one-at-a-time
+ * testimonial sequence in reviews-pinned.tsx.
+ */
+export const reviewsQuotesLayout: "velocity" | "pinned" = "velocity"
+
 const QUOTE_COUNT = 3
 const TUTORING_PROOF = "100+ CIS students · Bellevue University"
+/** Landing pin only — no extra tutoring scroll. */
+const END_BEATS = 2
 
-function quoteBand(index: number) {
-  const start = 0.2 + index * (0.6 / QUOTE_COUNT)
-  const end = start + 0.6 / QUOTE_COUNT
-  return {
-    start,
-    enter: start + 0.04,
-    holdEnd: end - 0.05,
-    end,
-  }
+const ROW = {
+  size: "font-heading text-4xl leading-[1.1] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl",
+  sep: "mx-1 font-mono text-[0.55em] font-medium text-emerald-700/80 dark:text-emerald-300/80",
+  name: "font-heading font-medium text-[0.72em] text-muted-foreground",
+} as const
+
+const ROW_STYLE = [
+  {
+    direction: "left" as const,
+    baseSpeed: 42,
+    boostSpeed: 80,
+    separator: "//",
+    text: "font-bold",
+  },
+  {
+    direction: "right" as const,
+    baseSpeed: 28,
+    boostSpeed: 70,
+    separator: "</>",
+    text: "font-semibold text-transparent [-webkit-text-stroke:1.5px_rgba(15,23,42,0.82)] dark:[-webkit-text-stroke:1.5px_rgba(255,255,255,0.82)]",
+  },
+  {
+    direction: "left" as const,
+    baseSpeed: 36,
+    boostSpeed: 76,
+    separator: "•",
+    text: "font-semibold italic",
+  },
+] as const
+
+function VelocityUnit({
+  review,
+  separator,
+  textClass,
+}: {
+  review: Review
+  separator: string
+  textClass: string
+}) {
+  return (
+    <span className={cn("flex items-center gap-x-6 whitespace-nowrap", ROW.size, textClass)}>
+      <span>&ldquo;{review.quote}&rdquo;</span>
+      <span className={ROW.sep}>{separator}</span>
+      <span className={ROW.name}>{review.name}</span>
+    </span>
+  )
 }
 
-function ParallaxBackdrop({ progress }: { progress: MotionValue<number> }) {
-  const { layers } = useDepthLayers()
-  const y = useTransform(progress, [0, 1], ["12%", "-12%"])
-  const scale = useTransform(progress, [0, 1], [1.06, 1.16])
-  const circuit = layers.background === "circuit"
+function TutoringVelocity({ items }: { items: Review[] }) {
+  const reduced = useReducedMotion()
+
+  if (reduced) {
+    return (
+      <div className="mx-auto flex max-w-3xl flex-col gap-8 px-6">
+        {items.map((review, index) => (
+          <p
+            key={review.name}
+            className="font-heading text-2xl font-semibold tracking-tight text-balance sm:text-3xl"
+          >
+            <span className="mr-3 font-mono text-[0.7em] text-emerald-700 dark:text-emerald-300">
+              {ROW_STYLE[index].separator}
+            </span>
+            &ldquo;{review.quote}&rdquo;{" "}
+            <span className="text-[0.75em] font-medium text-muted-foreground">
+              {review.name}
+            </span>
+          </p>
+        ))}
+      </div>
+    )
+  }
 
   return (
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-0 overflow-hidden"
-    >
-      <motion.div
-        style={{ y, scale }}
-        className="absolute inset-[-18%]"
-      >
-        {circuit ? (
-          <>
-            <div className="absolute top-[8%] left-1/2 size-[90vmin] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(4,120,87,0.08),transparent_64%)] dark:bg-[radial-gradient(circle,rgba(16,185,129,0.12),transparent_64%)]" />
-            <div className="absolute top-[30%] left-[8%] size-[55vmin] rounded-full bg-[radial-gradient(circle,rgba(14,116,144,0.07),transparent_70%)] dark:bg-[radial-gradient(circle,rgba(34,211,238,0.10),transparent_70%)]" />
-            <div className="absolute right-[6%] bottom-[12%] size-[52vmin] rounded-full bg-[radial-gradient(circle,rgba(180,83,9,0.06),transparent_70%)] dark:bg-[radial-gradient(circle,rgba(251,191,36,0.08),transparent_70%)]" />
-          </>
-        ) : (
-          <>
-            <div className="absolute top-[8%] left-1/2 size-[90vmin] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(109,40,217,0.13),transparent_64%)] dark:bg-[radial-gradient(circle,rgba(168,85,247,0.22),transparent_64%)]" />
-            <div className="absolute top-[30%] left-[8%] size-[55vmin] rounded-full bg-[radial-gradient(circle,rgba(190,24,93,0.10),transparent_70%)] dark:bg-[radial-gradient(circle,rgba(255,41,117,0.16),transparent_70%)]" />
-            <div className="absolute right-[6%] bottom-[12%] size-[60vmin] rounded-full bg-[radial-gradient(circle,rgba(15,118,110,0.10),transparent_70%)] dark:bg-[radial-gradient(circle,rgba(0,255,241,0.12),transparent_70%)]" />
-          </>
-        )}
-      </motion.div>
+    <div className="flex flex-col gap-3 py-4 md:gap-5 md:py-6">
+      <div className="sr-only">
+        {items.map((review) => (
+          <p key={review.name}>
+            {review.quote} {review.name}. {review.context}.
+          </p>
+        ))}
+      </div>
+      {items.map((review, index) => {
+        const row = ROW_STYLE[index]
+        const copies = Array.from({ length: 3 }, (_, copy) => (
+          <VelocityUnit
+            key={`${review.name}-${copy}`}
+            review={review}
+            separator={row.separator}
+            textClass={row.text}
+          />
+        ))
+        return (
+          <ScrollVelocityRow
+            key={review.name}
+            direction={row.direction}
+            baseSpeed={row.baseSpeed}
+            boostSpeed={row.boostSpeed}
+            gap="1.75rem"
+            className="py-1 md:py-1.5"
+          >
+            {copies}
+          </ScrollVelocityRow>
+        )
+      })}
     </div>
   )
 }
 
-function TestimonialCard({
-  review,
-  index,
-  progress,
-}: {
-  review: Review
-  index: number
-  progress: MotionValue<number>
-}) {
-  const { start, enter, holdEnd, end } = quoteBand(index)
-  // Drive type from raw scroll progress — no spring lag while reading.
-  const opacity = useTransform(
-    progress,
-    [start, enter, holdEnd, end],
-    [0, 1, 1, 0]
-  )
-  const y = useTransform(
-    progress,
-    [start, enter, holdEnd, end],
-    [36, 0, 0, -36]
-  )
-  const blur = useTransform(
-    progress,
-    [start, enter, holdEnd, end],
-    [10, 0, 0, 10]
-  )
-  const filter = useTransform(blur, (value) => `blur(${value}px)`)
-  const rotateX = useTransform(
-    progress,
-    [start, enter, holdEnd, end],
-    [9, 0, 0, -8]
-  )
-  const rotateY = useTransform(
-    progress,
-    [start, enter, holdEnd, end],
-    [-4, 0, 0, 4]
-  )
-
-  return (
-    <motion.figure
-      style={{
-        opacity,
-        y,
-        filter,
-        rotateX,
-        rotateY,
-        transformPerspective: 1200,
-      }}
-      className="absolute inset-x-0 top-1/2 z-10 flex -translate-y-1/2 justify-center px-4 will-change-transform"
-    >
-      <div
-        className={cn(
-          "flex w-full max-w-3xl flex-col items-center gap-5 rounded-2xl border border-black/12 bg-card/90 p-6 text-center shadow-[inset_0_1px_0_rgba(255,255,255,1),0_10px_28px_-10px_rgba(0,0,0,.14),0_24px_48px_-20px_rgba(0,0,0,.12)] backdrop-blur-md xs:p-8 md:gap-6 md:p-10",
-          "dark:border-white/10 dark:bg-background/80 dark:shadow-[0_16px_48px_-16px_rgba(0,0,0,.55)]"
-        )}
-      >
-        <blockquote className="font-heading text-xl font-semibold tracking-tight text-balance xs:text-2xl md:text-4xl md:leading-snug">
-          &ldquo;{review.quote}&rdquo;
-        </blockquote>
-        <figcaption className="flex flex-col gap-1">
-          <span className="font-mono text-[0.65rem] tracking-widest text-muted-foreground uppercase md:text-xs">
-            {review.name}
-          </span>
-          <span className="text-xs text-muted-foreground md:text-sm">
-            {review.context}
-          </span>
-        </figcaption>
-      </div>
-    </motion.figure>
-  )
-}
-
-function BeatDots({ progress }: { progress: MotionValue<number> }) {
-  const rowOpacity = useTransform(
-    progress,
-    [0.18, 0.24, 0.76, 0.82],
-    [0, 1, 1, 0]
-  )
-
-  return (
-    <motion.div
-      style={{ opacity: rowOpacity }}
-      className="pointer-events-none absolute inset-x-0 bottom-28 z-20 flex justify-center gap-2 md:bottom-32"
-      aria-hidden
-    >
-      {reviews.slice(0, QUOTE_COUNT).map((review, index) => (
-        <BeatDot key={review.name} progress={progress} index={index} />
-      ))}
-    </motion.div>
-  )
-}
-
-function BeatDot({
-  progress,
-  index,
-}: {
-  progress: MotionValue<number>
-  index: number
-}) {
-  const { start, enter, holdEnd, end } = quoteBand(index)
-  const opacity = useTransform(
-    progress,
-    [start, enter, holdEnd, end],
-    [0.3, 1, 1, 0.3]
-  )
-  const scale = useTransform(
-    progress,
-    [start, enter, holdEnd, end],
-    [0.85, 1.25, 1.25, 0.85]
-  )
-
-  return (
-    <motion.span
-      style={{ opacity, scale }}
-      className="size-1.5 rounded-full bg-foreground md:size-2"
-    />
-  )
-}
-
-function TutoringIntro({ progress }: { progress: MotionValue<number> }) {
-  const { heading, description } = siteConfig.reviews
-  const opacity = useTransform(progress, [0, 0.12, 0.2], [1, 1, 0])
-  const y = useTransform(progress, [0, 0.2], [0, -24])
-  const blur = useTransform(progress, [0.12, 0.2], [0, 8])
-  const filter = useTransform(blur, (value) => `blur(${value}px)`)
-
-  return (
-    <motion.div
-      style={{ opacity, y, filter }}
-      className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center will-change-transform"
-    >
-      <SectionHeading heading={heading} description={description} />
-      <p className="mt-8 font-mono text-[0.7rem] tracking-[0.2em] text-muted-foreground uppercase md:mt-10 md:text-xs">
-        {TUTORING_PROOF}
-      </p>
-    </motion.div>
-  )
-}
-
-function EndingLanding({ progress }: { progress: MotionValue<number> }) {
-  // Foreground travels a little farther than mid-layer (≈1.2x) so it
-  // feels closer as it settles, with a soft shadow at rest.
-  const headingOpacity = useTransform(progress, [0.8, 0.9, 1], [0, 1, 1])
-  const headingY = useTransform(progress, [0.8, 1], [72, 0])
-  const headingScale = useTransform(progress, [0.8, 0.94, 1], [0.84, 1.03, 1])
-  const headingBlur = useTransform(progress, [0.8, 0.9, 1], [8, 0, 0])
+function EndingSettle({ progress }: { progress: MotionValue<number> }) {
+  const headingOpacity = useTransform(progress, [0, 0.4, 1], [0, 1, 1])
+  const headingY = useTransform(progress, [0, 1], [72, 0])
+  const headingScale = useTransform(progress, [0, 0.7, 1], [0.84, 1.03, 1])
+  const headingBlur = useTransform(progress, [0, 0.4, 1], [8, 0, 0])
   const headingFilter = useTransform(headingBlur, (value) => `blur(${value}px)`)
-
-  const footerY = useTransform(progress, [0.8, 1], ["130%", "0%"])
-  const footerOpacity = useTransform(progress, [0.8, 0.9, 1], [0, 1, 1])
+  const footerY = useTransform(progress, [0, 1], ["130%", "0%"])
+  const footerOpacity = useTransform(progress, [0, 0.45, 1], [0, 1, 1])
 
   return (
     <>
@@ -251,65 +178,17 @@ function EndingLanding({ progress }: { progress: MotionValue<number> }) {
   )
 }
 
-function StaticQuotes({ items }: { items: Review[] }) {
-  return (
-    <div
-      className={cn(
-        "mx-auto flex max-w-3xl flex-col gap-8 px-6",
-        sectionBodyClass
-      )}
-    >
-      {items.map((review) => (
-        <figure
-          key={review.name}
-          className={cn(
-            "flex flex-col items-center gap-4 rounded-2xl border border-black/12 bg-card/90 p-6 text-center shadow-[inset_0_1px_0_rgba(255,255,255,1),0_10px_28px_-10px_rgba(0,0,0,.14)] xs:p-8",
-            "dark:border-white/10 dark:bg-background/80 dark:shadow-none"
-          )}
-        >
-          <blockquote className="font-heading text-xl font-semibold tracking-tight text-balance md:text-2xl md:leading-snug">
-            &ldquo;{review.quote}&rdquo;
-          </blockquote>
-          <figcaption className="flex flex-col gap-1">
-            <span className="font-medium">{review.name}</span>
-            <span className="text-sm text-muted-foreground">
-              {review.context}
-            </span>
-          </figcaption>
-        </figure>
-      ))}
-    </div>
-  )
-}
-
-/**
- * Ending sequence:
- *  1. Tutoring intro holds.
- *  2–4. One testimonial at a time (glass card, fade/blur/tilt).
- *  5. "Let's build something" scales in; slim footer rises and rests.
- * Track height is five viewports so progress 1 == the last screen.
- */
-export function Reviews() {
-  const { heading, description } = siteConfig.reviews
-  const items = reviews.slice(0, QUOTE_COUNT)
+function EndingTrack() {
   const reduced = useReducedMotion()
   const track = useRef<HTMLDivElement>(null)
-
   const { scrollYProgress } = useScroll({
     target: track,
     offset: ["start start", "end end"],
   })
 
-  if (items.length === 0) return null
-
   if (reduced) {
     return (
-      <section id="reviews" className="scroll-mt-24">
-        <SectionHeading heading={heading} description={description} />
-        <p className="mt-6 px-6 text-center font-mono text-[0.7rem] tracking-[0.2em] text-muted-foreground uppercase md:text-xs">
-          {TUTORING_PROOF}
-        </p>
-        <StaticQuotes items={items} />
+      <>
         <h2
           className={cn(
             brandHeadingClass,
@@ -319,44 +198,53 @@ export function Reviews() {
           {siteConfig.footer.heading}
         </h2>
         <SlimFooter id="contact" />
-      </section>
+      </>
     )
   }
 
   return (
-    <section id="reviews" className="scroll-mt-24">
-      <div
-        ref={track}
-        data-ending-track
-        className="relative"
-        style={{ height: `${BEATS * 100}svh` }}
-      >
-        <div className="sticky top-0 isolate flex h-svh flex-col overflow-hidden">
-          <ParallaxBackdrop progress={scrollYProgress} />
-          <EndingOutlineWord progress={scrollYProgress} />
-          <TutoringIntro progress={scrollYProgress} />
-          <div className="relative min-h-0 flex-1">
-            {items.map((review, index) => (
-              <TestimonialCard
-                key={review.name}
-                review={review}
-                index={index}
-                progress={scrollYProgress}
-              />
-            ))}
-          </div>
-          <BeatDots progress={scrollYProgress} />
-          <EndingLanding progress={scrollYProgress} />
-        </div>
-        {/* Last viewport of the track — hash, Lenis snap, and Get in touch
-            all land here, with the heading and footer already at rest. */}
-        <div
-          id="contact"
-          className="pointer-events-none absolute right-0 bottom-0 left-0 h-svh"
-          aria-hidden
-        />
+    <div
+      ref={track}
+      data-ending-track
+      className="relative mt-16 md:mt-24"
+      style={{ height: `${END_BEATS * 100}svh` }}
+    >
+      <div className="sticky top-0 isolate flex h-svh flex-col overflow-hidden">
+        <ParallaxBackdrop progress={scrollYProgress} />
+        <EndingOutlineWord progress={scrollYProgress} />
+        <EndingSettle progress={scrollYProgress} />
       </div>
-    </section>
+      <div
+        id="contact"
+        className="pointer-events-none absolute right-0 bottom-0 left-0 h-svh"
+        aria-hidden
+      />
+    </div>
   )
 }
 
+/**
+ * Tutoring heading and quotes sit in normal document flow. Quotes are
+ * three big velocity rows (no pin, no extra scroll). The ending pin
+ * is only the final "Let's build something" + footer settle.
+ */
+export function Reviews() {
+  const { heading, description } = siteConfig.reviews
+  const items = reviews.slice(0, QUOTE_COUNT)
+
+  if (items.length === 0) return null
+  if (reviewsQuotesLayout === "pinned") return <ReviewsPinned />
+
+  return (
+    <section id="reviews" className="scroll-mt-24">
+      <SectionHeading heading={heading} description={description} />
+      <p className="mt-6 px-6 text-center font-mono text-[0.7rem] tracking-[0.2em] text-muted-foreground uppercase md:mt-8 md:text-xs">
+        {TUTORING_PROOF}
+      </p>
+      <div className="mt-10 md:mt-14">
+        <TutoringVelocity items={items} />
+      </div>
+      <EndingTrack />
+    </section>
+  )
+}

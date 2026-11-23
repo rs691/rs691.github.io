@@ -31,7 +31,8 @@ type GlyphSpec = {
  * Site-wide gutter glyphs in three depth bands. Far is slow, small, and
  * blurry (up + left); mid travels about with the page (up + right or
  * sideways); near is large, sharp, and fast (falling or opposite).
- * Parked in the outer edges so the center column stays readable.
+ * Parked in the shoulders, closer to the content column. A soft
+ * center mask keeps them faint where they sit behind body text.
  * A few ease to rest on the last screen.
  */
 const GLYPHS: GlyphSpec[] = [
@@ -41,7 +42,7 @@ const GLYPHS: GlyphSpec[] = [
     speed: 0.48,
     dir: "up-left",
     rotate: [8, -10],
-    className: "top-[8%] left-[1.2%]",
+    className: "top-[10%] left-[8%]",
     tone: "blue",
   },
   {
@@ -50,7 +51,7 @@ const GLYPHS: GlyphSpec[] = [
     speed: 0.54,
     dir: "up-left",
     rotate: [-6, 8],
-    className: "top-[50%] left-[1%] hidden md:block",
+    className: "top-[50%] left-[10%] hidden md:block",
     tone: "cyan",
   },
   {
@@ -59,7 +60,7 @@ const GLYPHS: GlyphSpec[] = [
     speed: 0.58,
     dir: "up-left",
     rotate: [10, -4],
-    className: "top-[78%] right-[1.2%] hidden md:block",
+    className: "top-[78%] right-[9%] hidden md:block",
     tone: "purple",
   },
   {
@@ -68,7 +69,7 @@ const GLYPHS: GlyphSpec[] = [
     speed: 0.98,
     dir: "side-right",
     rotate: [-8, 6],
-    className: "top-[16%] right-[1.2%]",
+    className: "top-[16%] right-[8%]",
     tone: "blue",
   },
   {
@@ -77,7 +78,7 @@ const GLYPHS: GlyphSpec[] = [
     speed: 1.05,
     dir: "up-right",
     rotate: [7, -9],
-    className: "top-[58%] left-[1.2%] hidden md:block",
+    className: "top-[58%] left-[7%] hidden md:block",
     tone: "pink",
   },
   {
@@ -86,7 +87,7 @@ const GLYPHS: GlyphSpec[] = [
     speed: 1.1,
     dir: "up-right",
     rotate: [-4, 10],
-    className: "top-[36%] right-[1%] hidden md:block",
+    className: "top-[38%] right-[11%] hidden md:block",
     tone: "cyan",
   },
   {
@@ -95,7 +96,7 @@ const GLYPHS: GlyphSpec[] = [
     speed: 1.58,
     dir: "fall",
     rotate: [-10, 8],
-    className: "top-[11%] left-[1%]",
+    className: "top-[14%] left-[11%]",
     tone: "purple",
     rest: true,
   },
@@ -105,7 +106,7 @@ const GLYPHS: GlyphSpec[] = [
     speed: 1.7,
     dir: "fall",
     rotate: [8, -12],
-    className: "top-[18%] right-[1%] hidden md:block",
+    className: "top-[22%] right-[12%] hidden md:block",
     tone: "cyan",
   },
   {
@@ -114,7 +115,7 @@ const GLYPHS: GlyphSpec[] = [
     speed: 1.76,
     dir: "fall-left",
     rotate: [-6, 14],
-    className: "top-[73%] left-[1%]",
+    className: "top-[70%] left-[9%]",
     tone: "pink",
     rest: true,
   },
@@ -124,7 +125,7 @@ const GLYPHS: GlyphSpec[] = [
     speed: 1.85,
     dir: "fall",
     rotate: [-14, 10],
-    className: "top-[40%] right-[1%] hidden md:block",
+    className: "top-[44%] right-[8%] hidden md:block",
     tone: "purple",
     rest: true,
   },
@@ -138,9 +139,9 @@ const TONE_CLASS = {
 } as const
 
 const BAND_CLASS: Record<Band, string> = {
-  far: "text-lg md:text-2xl opacity-[0.22] blur-[2.5px] dark:opacity-[0.18]",
-  mid: "text-xl md:text-4xl opacity-[0.30] blur-[0.7px] dark:opacity-[0.26]",
-  near: "text-2xl md:text-5xl opacity-[0.38] dark:opacity-[0.34] dark:[text-shadow:0_0_16px_currentColor]",
+  far: "text-3xl md:text-5xl opacity-[0.20] blur-[2.5px] dark:opacity-[0.16]",
+  mid: "text-5xl md:text-7xl opacity-[0.22] blur-[0.7px] dark:opacity-[0.20]",
+  near: "text-6xl md:text-8xl opacity-[0.24] dark:opacity-[0.22] dark:[text-shadow:0_0_18px_currentColor]",
 }
 
 const BAND_Z: Record<Band, string> = {
@@ -158,7 +159,7 @@ const BAND_TOGGLE = {
 function travelValues(dir: Dir, speed: number, rest: boolean) {
   const unit = 80
   const ty = unit * speed
-  const tx = 6 * speed
+  const tx = 4 * speed
   const times = rest ? [0, 0.86, 0.96, 1] : [0, 1]
 
   const y =
@@ -280,7 +281,7 @@ export function AmbientGlyphs() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden [mask-image:linear-gradient(to_right,black_0%,black_16%,rgba(0,0,0,0.28)_32%,rgba(0,0,0,0.28)_68%,black_84%,black_100%)]"
     >
       {reduced ? (
         <StaticGlyphs />
