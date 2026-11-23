@@ -1,109 +1,17 @@
 "use client"
 
-import { createContext, useCallback, useContext, useMemo, useSyncExternalStore, type ReactNode } from "react"
+import type { ReactNode } from "react"
 
-import {
-  depthLayerDefaults,
-  depthLayerPresets,
-  isLiveEditorEnabled,
-  readDepthLayers,
-  subscribeDepthLayers,
-  writeDepthLayers,
-  type BackgroundChoice,
-  type DepthLayerKey,
-  type DepthLayerPreset,
-  type DepthLayerToggles,
-} from "@/lib/depth-layers"
+import { depthLayerDefaults, type DepthLayerToggles } from "@/lib/depth-layers"
 
-type DepthLayerContextValue = {
-  layers: DepthLayerToggles
-  editor: boolean
-  setLayer: (key: DepthLayerKey, value: boolean) => void
-  toggleLayer: (key: DepthLayerKey) => void
-  setBackground: (background: BackgroundChoice) => void
-  applyPreset: (preset: DepthLayerPreset) => void
-  reset: () => void
+/**
+ * Returns the fixed site-wide depth mix. There is no live editor and
+ * no localStorage override — visitors always get depthLayerDefaults.
+ */
+export function useDepthLayers(): { layers: DepthLayerToggles } {
+  return { layers: depthLayerDefaults }
 }
-
-const DepthLayerContext = createContext<DepthLayerContextValue | null>(null)
-
-function subscribeEditor(onStoreChange: () => void) {
-  window.addEventListener("popstate", onStoreChange)
-  window.addEventListener("hashchange", onStoreChange)
-  return () => {
-    window.removeEventListener("popstate", onStoreChange)
-    window.removeEventListener("hashchange", onStoreChange)
-  }
-}
-
-const idle = {
-  layers: depthLayerDefaults,
-  editor: false,
-  setLayer: () => {},
-  toggleLayer: () => {},
-  setBackground: () => {},
-  applyPreset: () => {},
-  reset: () => {},
-} satisfies DepthLayerContextValue
 
 export function DepthLayerProvider({ children }: { children: ReactNode }) {
-  const editor = useSyncExternalStore(
-    subscribeEditor,
-    isLiveEditorEnabled,
-    () => false
-  )
-  const layers = useSyncExternalStore(
-    subscribeDepthLayers,
-    readDepthLayers,
-    () => depthLayerDefaults
-  )
-
-  const setLayer = useCallback(
-    (key: DepthLayerKey, value: boolean) => {
-      writeDepthLayers({ ...layers, [key]: value })
-    },
-    [layers]
-  )
-  const toggleLayer = useCallback(
-    (key: DepthLayerKey) => {
-      writeDepthLayers({ ...layers, [key]: !layers[key] })
-    },
-    [layers]
-  )
-  const setBackground = useCallback(
-    (background: BackgroundChoice) => {
-      writeDepthLayers({ ...layers, background })
-    },
-    [layers]
-  )
-  const applyPreset = useCallback((preset: DepthLayerPreset) => {
-    writeDepthLayers({ ...depthLayerPresets[preset] })
-  }, [])
-  const reset = useCallback(() => {
-    writeDepthLayers({ ...depthLayerDefaults })
-  }, [])
-
-  const value = useMemo(
-    () => ({
-      layers,
-      editor,
-      setLayer,
-      toggleLayer,
-      setBackground,
-      applyPreset,
-      reset,
-    }),
-    [layers, editor, setLayer, toggleLayer, setBackground, applyPreset, reset]
-  )
-
-  return (
-    <DepthLayerContext.Provider value={value}>
-      {children}
-    </DepthLayerContext.Provider>
-  )
-}
-
-export function useDepthLayers() {
-  const context = useContext(DepthLayerContext)
-  return context ?? idle
+  return children
 }

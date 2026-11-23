@@ -1,11 +1,8 @@
 /**
- * Back-compat re-export. The depth map, presets, and live toggles live
- * in `@/lib/depth-layers`. Prefer useDepthLayers() for runtime switches.
+ * Back-compat re-export of the fixed depth map in `@/lib/depth-layers`.
  */
 export {
   depthLayerDefaults,
   depthLayerDefaults as endingLayerToggles,
-  depthLayerPresets,
-  DEPTH_LAYER_KEYS,
   type DepthLayerToggles,
 } from "@/lib/depth-layers"

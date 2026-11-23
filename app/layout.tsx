@@ -6,8 +6,6 @@ import { AmbientAurora } from "@/components/ambient-aurora"
 import { AmbientCircuit } from "@/components/ambient-circuit"
 import { AmbientGlyphs } from "@/components/ambient-glyphs"
 import { AmbientOutlineWords } from "@/components/ambient-outline-words"
-import { DepthLayerControls } from "@/components/depth-layer-controls"
-import { DepthLayerProvider } from "@/components/depth-layer-provider"
 import { SkipLink } from "@/components/skip-link"
 import { SmoothScroll } from "@/components/smooth-scroll"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -71,16 +69,13 @@ export default function RootLayout({
         <SkipLink />
         <ThemeProvider>
           <SmoothScroll>
-            <DepthLayerProvider>
-              <AmbientCircuit />
-              <AmbientAurora />
-              <AmbientOutlineWords />
-              <AmbientGlyphs />
-              <div className="relative z-10">
-                <TooltipProvider>{children}</TooltipProvider>
-              </div>
-              <DepthLayerControls />
-            </DepthLayerProvider>
+            <AmbientCircuit />
+            <AmbientAurora />
+            <AmbientOutlineWords />
+            <AmbientGlyphs />
+            <div className="relative z-10">
+              <TooltipProvider>{children}</TooltipProvider>
+            </div>
           </SmoothScroll>
         </ThemeProvider>
       </body>
