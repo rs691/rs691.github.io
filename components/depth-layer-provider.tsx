@@ -9,6 +9,7 @@ import {
   readDepthLayers,
   subscribeDepthLayers,
   writeDepthLayers,
+  type BackgroundChoice,
   type DepthLayerKey,
   type DepthLayerPreset,
   type DepthLayerToggles,
@@ -19,6 +20,7 @@ type DepthLayerContextValue = {
   editor: boolean
   setLayer: (key: DepthLayerKey, value: boolean) => void
   toggleLayer: (key: DepthLayerKey) => void
+  setBackground: (background: BackgroundChoice) => void
   applyPreset: (preset: DepthLayerPreset) => void
   reset: () => void
 }
@@ -33,6 +35,16 @@ function subscribeEditor(onStoreChange: () => void) {
     window.removeEventListener("hashchange", onStoreChange)
   }
 }
+
+const idle = {
+  layers: depthLayerDefaults,
+  editor: false,
+  setLayer: () => {},
+  toggleLayer: () => {},
+  setBackground: () => {},
+  applyPreset: () => {},
+  reset: () => {},
+} satisfies DepthLayerContextValue
 
 export function DepthLayerProvider({ children }: { children: ReactNode }) {
   const editor = useSyncExternalStore(
@@ -58,6 +70,12 @@ export function DepthLayerProvider({ children }: { children: ReactNode }) {
     },
     [layers]
   )
+  const setBackground = useCallback(
+    (background: BackgroundChoice) => {
+      writeDepthLayers({ ...layers, background })
+    },
+    [layers]
+  )
   const applyPreset = useCallback((preset: DepthLayerPreset) => {
     writeDepthLayers({ ...depthLayerPresets[preset] })
   }, [])
@@ -66,8 +84,16 @@ export function DepthLayerProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const value = useMemo(
-    () => ({ layers, editor, setLayer, toggleLayer, applyPreset, reset }),
-    [layers, editor, setLayer, toggleLayer, applyPreset, reset]
+    () => ({
+      layers,
+      editor,
+      setLayer,
+      toggleLayer,
+      setBackground,
+      applyPreset,
+      reset,
+    }),
+    [layers, editor, setLayer, toggleLayer, setBackground, applyPreset, reset]
   )
 
   return (
@@ -79,15 +105,5 @@ export function DepthLayerProvider({ children }: { children: ReactNode }) {
 
 export function useDepthLayers() {
   const context = useContext(DepthLayerContext)
-  if (!context) {
-    return {
-      layers: depthLayerDefaults,
-      editor: false,
-      setLayer: () => {},
-      toggleLayer: () => {},
-      applyPreset: () => {},
-      reset: () => {},
-    } satisfies DepthLayerContextValue
-  }
-  return context
+  return context ?? idle
 }

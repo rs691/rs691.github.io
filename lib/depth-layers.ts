@@ -3,31 +3,41 @@
  * so stacked layers read as real parallax. Toggle them independently
  * or apply a preset to compare combinations. Stubs are no-ops until built.
  *
- * Layer              | z    | speed         | direction            | blur      | opacity
+ * Background is a single choice (none | aurora | circuit), not a stack.
+ *
+ * Layer              | z    | speed         | direction            | blur      | default
  * -------------------|------|---------------|----------------------|-----------|----------
- * Aurora background  | 0    | ~0.22–0.28x   | slow rise / drift    | soft CSS  | on by default
- * Ambient words      | 0    | ~0.25–0.35x   | left (slow cruise)   | 2–3px     | off by default
- * Ending outline     | 1    | 0.40–0.55x    | right                | 0–1px     | off by default
- * Far glyphs         | 1    | ~0.45–0.58x   | up + left            | 2–3px     | 0.16–0.22
- * Mid glyphs         | 2    | ~0.95–1.10x   | up + right / side    | 0.6–1px   | 0.24–0.30
- * Near glyphs        | 3    | ~1.55–1.85x   | fall / opposite      | 0         | 0.30–0.38
- * Heading / footer   | 30   | ~1.2x         | rise, then settle    | 0         | 1
+ * Background         | 0    | ~0.22–0.28x   | slow rise / drift    | soft CSS  | circuit
+ * Ambient words      | 0    | ~0.25–0.35x   | left (slow cruise)   | 2–3px     | off
+ * Ending outline     | 1    | 0.40–0.55x    | right                | 0–1px     | off
+ * Far glyphs         | 1    | ~0.45–0.58x   | up + left            | 2–3px     | on
+ * Mid glyphs         | 2    | ~0.95–1.10x   | up + right / side    | 0.6–1px   | on
+ * Near glyphs        | 3    | ~1.55–1.85x   | fall / opposite      | 0         | on
+ * Heading / footer   | 30   | ~1.2x         | rise, then settle    | 0         | on
  * Image layer        | —    | stub          | —                    | —         | off
  * Quote marks        | —    | stub          | —                    | —         | off
  * Marquee            | —    | stub          | —                    | —         | off
  *
  * Glyphs are site-wide, parked in the outer ~25% gutters and corners
- * so the center reading column stays clear. The aurora is the deepest
- * field: faint at the hero, building through mid-page so the ending
- * orbs feel like a continuation, not a sudden bloom.
- * Default preset: glyphs-only (aurora + all three glyph bands).
+ * so the center reading column stays clear. Default preset: glyphs-only
+ * (circuit grid + all three glyph bands). Flip Background in the panel
+ * to compare aurora, circuit, or none.
  *
  * Presets: glyphs-only (default), minimal (near glyphs), words
  * (ambient only), glyphs+words, all (includes stubs).
  */
 
+export const BACKGROUND_CHOICES = ["none", "aurora", "circuit"] as const
+
+export type BackgroundChoice = (typeof BACKGROUND_CHOICES)[number]
+
+export const BACKGROUND_LABELS: Record<BackgroundChoice, string> = {
+  none: "None",
+  aurora: "Aurora",
+  circuit: "Circuit grid",
+}
+
 export const DEPTH_LAYER_KEYS = [
-  "aurora",
   "ambientOutline",
   "outlineWord",
   "farGlyphs",
@@ -40,10 +50,11 @@ export const DEPTH_LAYER_KEYS = [
 
 export type DepthLayerKey = (typeof DEPTH_LAYER_KEYS)[number]
 
-export type DepthLayerToggles = Record<DepthLayerKey, boolean>
+export type DepthLayerToggles = Record<DepthLayerKey, boolean> & {
+  background: BackgroundChoice
+}
 
 export const DEPTH_LAYER_LABELS: Record<DepthLayerKey, string> = {
-  aurora: "Aurora background",
   ambientOutline: "Ambient words",
   outlineWord: "Ending outline",
   farGlyphs: "Far glyphs",
@@ -61,7 +72,7 @@ export const DEPTH_LAYER_STUBS: readonly DepthLayerKey[] = [
 ]
 
 const off: DepthLayerToggles = {
-  aurora: false,
+  background: "none",
   ambientOutline: false,
   outlineWord: false,
   farGlyphs: false,
@@ -74,7 +85,7 @@ const off: DepthLayerToggles = {
 
 export const depthLayerDefaults: DepthLayerToggles = {
   ...off,
-  aurora: true,
+  background: "circuit",
   farGlyphs: true,
   midGlyphs: true,
   nearGlyphs: true,
@@ -110,7 +121,7 @@ export const DEPTH_LAYER_PRESET_LABELS: Record<DepthLayerPreset, string> = {
 }
 
 /** Bump this to ignore stale localStorage from earlier default mixes. */
-export const DEPTH_LAYERS_STORAGE_VERSION = 3
+export const DEPTH_LAYERS_STORAGE_VERSION = 4
 export const DEPTH_LAYERS_STORAGE_KEY = "rs-depth-layers"
 
 export function isLiveEditorEnabled() {
@@ -118,6 +129,12 @@ export function isLiveEditorEnabled() {
   return (
     process.env.NODE_ENV === "development" ||
     new URLSearchParams(window.location.search).has("layers")
+  )
+}
+
+export function isBackgroundChoice(value: unknown): value is BackgroundChoice {
+  return (
+    value === "none" || value === "aurora" || value === "circuit"
   )
 }
 
@@ -139,6 +156,9 @@ export function parseDepthLayers(raw: string | null): DepthLayerToggles {
   try {
     const parsed: unknown = JSON.parse(raw)
     if (!isCurrentVersion(parsed)) return { ...depthLayerDefaults }
+    if (isBackgroundChoice(parsed.background)) {
+      next.background = parsed.background
+    }
     for (const key of DEPTH_LAYER_KEYS) {
       if (typeof parsed[key] === "boolean") next[key] = parsed[key]
     }

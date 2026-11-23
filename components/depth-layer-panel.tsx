@@ -4,6 +4,8 @@ import { useState } from "react"
 
 import { useDepthLayers } from "@/components/depth-layer-provider"
 import {
+  BACKGROUND_CHOICES,
+  BACKGROUND_LABELS,
   DEPTH_LAYER_KEYS,
   DEPTH_LAYER_LABELS,
   DEPTH_LAYER_PRESET_LABELS,
@@ -19,7 +21,8 @@ import { cn } from "@/lib/utils"
  * unless the URL contains ?layers.
  */
 export function DepthLayerPanel() {
-  const { layers, toggleLayer, applyPreset, reset } = useDepthLayers()
+  const { layers, toggleLayer, setBackground, applyPreset, reset } =
+    useDepthLayers()
   const [collapsed, setCollapsed] = useState(
     () => typeof window !== "undefined" && window.innerWidth < 768
   )
@@ -67,6 +70,28 @@ export function DepthLayerPanel() {
           </button>
         ))}
       </div>
+      <fieldset className="mb-3">
+        <legend className="mb-1.5 font-mono text-[0.65rem] tracking-[0.16em] text-muted-foreground uppercase">
+          Background
+        </legend>
+        <div className="flex flex-col gap-1.5">
+          {BACKGROUND_CHOICES.map((choice) => (
+            <label
+              key={choice}
+              className="flex cursor-pointer items-center gap-2 font-mono text-[0.7rem]"
+            >
+              <input
+                type="radio"
+                name="rs-background"
+                checked={layers.background === choice}
+                onChange={() => setBackground(choice)}
+                className="size-3.5 accent-emerald-600"
+              />
+              <span>{BACKGROUND_LABELS[choice]}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
       <ul className="flex flex-col gap-1.5">
         {DEPTH_LAYER_KEYS.map((key) => {
           const stub = DEPTH_LAYER_STUBS.includes(key)

@@ -9,6 +9,7 @@ import {
   type MotionValue,
 } from "motion/react"
 
+import { useDepthLayers } from "@/components/depth-layer-provider"
 import { SlimFooter } from "@/components/sections/contact"
 import { EndingOutlineWord } from "@/components/sections/ending-outline-word"
 import {
@@ -37,8 +38,10 @@ function quoteBand(index: number) {
 }
 
 function ParallaxBackdrop({ progress }: { progress: MotionValue<number> }) {
+  const { layers } = useDepthLayers()
   const y = useTransform(progress, [0, 1], ["12%", "-12%"])
   const scale = useTransform(progress, [0, 1], [1.06, 1.16])
+  const circuit = layers.background === "circuit"
 
   return (
     <div
@@ -49,9 +52,19 @@ function ParallaxBackdrop({ progress }: { progress: MotionValue<number> }) {
         style={{ y, scale }}
         className="absolute inset-[-18%]"
       >
-        <div className="absolute top-[8%] left-1/2 size-[90vmin] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(109,40,217,0.13),transparent_64%)] dark:bg-[radial-gradient(circle,rgba(168,85,247,0.22),transparent_64%)]" />
-        <div className="absolute top-[30%] left-[8%] size-[55vmin] rounded-full bg-[radial-gradient(circle,rgba(190,24,93,0.10),transparent_70%)] dark:bg-[radial-gradient(circle,rgba(255,41,117,0.16),transparent_70%)]" />
-        <div className="absolute right-[6%] bottom-[12%] size-[60vmin] rounded-full bg-[radial-gradient(circle,rgba(15,118,110,0.10),transparent_70%)] dark:bg-[radial-gradient(circle,rgba(0,255,241,0.12),transparent_70%)]" />
+        {circuit ? (
+          <>
+            <div className="absolute top-[8%] left-1/2 size-[90vmin] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(4,120,87,0.08),transparent_64%)] dark:bg-[radial-gradient(circle,rgba(16,185,129,0.12),transparent_64%)]" />
+            <div className="absolute top-[30%] left-[8%] size-[55vmin] rounded-full bg-[radial-gradient(circle,rgba(14,116,144,0.07),transparent_70%)] dark:bg-[radial-gradient(circle,rgba(34,211,238,0.10),transparent_70%)]" />
+            <div className="absolute right-[6%] bottom-[12%] size-[52vmin] rounded-full bg-[radial-gradient(circle,rgba(180,83,9,0.06),transparent_70%)] dark:bg-[radial-gradient(circle,rgba(251,191,36,0.08),transparent_70%)]" />
+          </>
+        ) : (
+          <>
+            <div className="absolute top-[8%] left-1/2 size-[90vmin] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(109,40,217,0.13),transparent_64%)] dark:bg-[radial-gradient(circle,rgba(168,85,247,0.22),transparent_64%)]" />
+            <div className="absolute top-[30%] left-[8%] size-[55vmin] rounded-full bg-[radial-gradient(circle,rgba(190,24,93,0.10),transparent_70%)] dark:bg-[radial-gradient(circle,rgba(255,41,117,0.16),transparent_70%)]" />
+            <div className="absolute right-[6%] bottom-[12%] size-[60vmin] rounded-full bg-[radial-gradient(circle,rgba(15,118,110,0.10),transparent_70%)] dark:bg-[radial-gradient(circle,rgba(0,255,241,0.12),transparent_70%)]" />
+          </>
+        )}
       </motion.div>
     </div>
   )

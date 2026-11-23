@@ -80,7 +80,7 @@ export function AmbientAurora() {
     }
   }, [scrollYProgress, progress])
 
-  if (!layers.aurora) return null
+  if (layers.background !== "aurora") return null
 
   return (
     <div
