@@ -14,6 +14,7 @@ import { useDepthLayers } from "@/components/depth-layer-provider"
 import { cn } from "@/lib/utils"
 
 type Band = "far" | "mid" | "near"
+type Tone = "purple" | "cyan" | "pink" | "blue"
 type Dir = "up-left" | "up-right" | "side-right" | "fall" | "fall-left"
 
 type GlyphSpec = {
@@ -23,17 +24,22 @@ type GlyphSpec = {
   dir: Dir
   rotate: readonly [number, number]
   className: string
-  tone: "purple" | "cyan" | "pink" | "blue"
+  tone: Tone
   rest?: boolean
 }
 
 /**
- * Site-wide gutter glyphs in three depth bands. Far is slow, small, and
- * blurry (up + left); mid travels about with the page (up + right or
+ * Site-wide gutter glyphs in three depth bands. Far is slow, small, soft,
+ * and cooler (up + left); mid travels about with the page (up + right or
  * sideways); near is large, sharp, and fast (falling or opposite).
  * Parked in the shoulders, closer to the content column. A soft
  * center mask keeps them faint where they sit behind body text.
  * A few ease to rest on the last screen.
+ *
+ * Stacking is explicit: far < mid < near, and within a band the
+ * faster (and visually larger) glyph sits in front. A background-colored
+ * text stroke gives each glyph a solid silhouette so a front glyph
+ * occludes the one behind instead of blending through it.
  */
 const GLYPHS: GlyphSpec[] = [
   {
@@ -87,7 +93,7 @@ const GLYPHS: GlyphSpec[] = [
     speed: 1.1,
     dir: "up-right",
     rotate: [-4, 10],
-    className: "top-[38%] right-[11%] hidden md:block",
+    className: "top-[40%] right-[9%] hidden md:block",
     tone: "cyan",
   },
   {
@@ -106,7 +112,7 @@ const GLYPHS: GlyphSpec[] = [
     speed: 1.7,
     dir: "fall",
     rotate: [8, -12],
-    className: "top-[22%] right-[12%] hidden md:block",
+    className: "top-[20%] right-[10%] hidden md:block",
     tone: "cyan",
   },
   {
@@ -131,24 +137,68 @@ const GLYPHS: GlyphSpec[] = [
   },
 ]
 
-const TONE_CLASS = {
-  purple: "text-violet-700 dark:text-violet-300",
-  cyan: "text-teal-700 dark:text-cyan-300",
-  pink: "text-rose-700 dark:text-pink-400",
-  blue: "text-blue-800 dark:text-blue-400",
-} as const
+/** Cooler, desaturated tints in the far band; fuller color up close. */
+const TONE_CLASS: Record<Band, Record<Tone, string>> = {
+  far: {
+    purple: "text-indigo-800/70 dark:text-slate-400/80",
+    cyan: "text-slate-600/75 dark:text-teal-500/55",
+    pink: "text-slate-600/75 dark:text-rose-300/45",
+    blue: "text-slate-700/80 dark:text-slate-400/80",
+  },
+  mid: {
+    purple: "text-violet-800/85 dark:text-violet-300/85",
+    cyan: "text-teal-800/85 dark:text-cyan-300/85",
+    pink: "text-rose-800/85 dark:text-pink-400/85",
+    blue: "text-blue-900/85 dark:text-blue-400/85",
+  },
+  near: {
+    purple: "text-violet-700 dark:text-violet-200",
+    cyan: "text-teal-700 dark:text-cyan-200",
+    pink: "text-rose-700 dark:text-pink-300",
+    blue: "text-blue-800 dark:text-blue-300",
+  },
+}
+
+/**
+ * No element-level opacity: that would also fade the occluding stroke.
+ * Fill color alpha lives in TONE_CLASS. The background-colored stroke
+ * stays opaque so a front glyph covers the one behind it.
+ */
+const HALO =
+  "[paint-order:stroke_fill] [-webkit-text-stroke-color:var(--background)]"
 
 const BAND_CLASS: Record<Band, string> = {
-  far: "text-3xl md:text-5xl opacity-[0.20] blur-[2.5px] dark:opacity-[0.16]",
-  mid: "text-5xl md:text-7xl opacity-[0.22] blur-[0.7px] dark:opacity-[0.20]",
-  near: "text-6xl md:text-8xl opacity-[0.24] dark:opacity-[0.22] dark:[text-shadow:0_0_18px_currentColor]",
+  far: `text-3xl md:text-5xl blur-[5px] [-webkit-text-stroke-width:0.22em] ${HALO}`,
+  mid: `text-5xl md:text-7xl [-webkit-text-stroke-width:0.16em] ${HALO}`,
+  near: `text-6xl md:text-8xl [-webkit-text-stroke-width:0.13em] ${HALO} [text-shadow:0_2px_8px_rgba(0,0,0,.22)] dark:[text-shadow:0_3px_12px_rgba(0,0,0,.55),0_0_18px_currentColor]`,
 }
 
-const BAND_Z: Record<Band, string> = {
-  far: "z-[1]",
-  mid: "z-[2]",
-  near: "z-[3]",
+const BAND_Z_BASE: Record<Band, number> = {
+  far: 10,
+  mid: 30,
+  near: 50,
 }
+
+const BAND_Z_LAYER: Record<Band, string> = {
+  far: "z-[10]",
+  mid: "z-[30]",
+  near: "z-[50]",
+}
+
+/** Faster / visually larger glyphs sit in front within their band. */
+const GLYPH_Z: Record<string, number> = (() => {
+  const out: Record<string, number> = {}
+  for (const band of ["far", "mid", "near"] as const) {
+    const peers = GLYPHS.filter((glyph) => glyph.band === band).sort((a, b) => {
+      if (a.speed !== b.speed) return a.speed - b.speed
+      return a.text.length - b.text.length
+    })
+    peers.forEach((glyph, index) => {
+      out[glyph.text] = BAND_Z_BASE[band] + index
+    })
+  }
+  return out
+})()
 
 const BAND_TOGGLE = {
   far: "farGlyphs",
@@ -214,10 +264,12 @@ function Glyph({
   return (
     <motion.span
       aria-hidden
-      style={{ x: xMv, y: yMv, rotate: rotateZ }}
+      data-glyph={text}
+      data-band={band}
+      style={{ x: xMv, y: yMv, rotate: rotateZ, zIndex: GLYPH_Z[text] }}
       className={cn(
         "pointer-events-none absolute font-mono font-semibold leading-none select-none will-change-transform",
-        TONE_CLASS[tone],
+        TONE_CLASS[band][tone],
         BAND_CLASS[band],
         className
       )}
@@ -237,9 +289,12 @@ function StaticGlyphs() {
         <span
           key={glyph.text}
           aria-hidden
+          data-glyph={glyph.text}
+          data-band={glyph.band}
+          style={{ zIndex: GLYPH_Z[glyph.text] }}
           className={cn(
             "pointer-events-none absolute font-mono font-semibold leading-none select-none",
-            TONE_CLASS[glyph.tone],
+            TONE_CLASS[glyph.band][glyph.tone],
             BAND_CLASS[glyph.band],
             glyph.className
           )}
@@ -292,7 +347,7 @@ export function AmbientGlyphs() {
               key={band}
               className={cn(
                 "pointer-events-none absolute inset-0 overflow-hidden",
-                BAND_Z[band]
+                BAND_Z_LAYER[band]
               )}
             >
               {GLYPHS.filter((glyph) => glyph.band === band).map((glyph) => (
