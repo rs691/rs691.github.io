@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef } from "react"
+import { Quote } from "lucide-react"
 import {
   motion,
   useReducedMotion,
@@ -21,10 +22,11 @@ import { reviews, siteConfig, type Review } from "@/lib/site-config"
 import { cn } from "@/lib/utils"
 
 /**
- * Flip to "pinned" to restore the original 5-beat, one-at-a-time
- * testimonial sequence in reviews-pinned.tsx.
+ * "cards" is the default readable testimonial layout.
+ * Flip to "velocity" for the scroll-velocity rows, or "pinned"
+ * for the original 5-beat, one-at-a-time sequence.
  */
-export const reviewsQuotesLayout: "velocity" | "pinned" = "velocity"
+export const reviewsQuotesLayout: "cards" | "velocity" | "pinned" = "cards"
 
 const QUOTE_COUNT = 3
 const TUTORING_PROOF = "100+ CIS students · Bellevue University"
@@ -59,6 +61,34 @@ const ROW_STYLE = [
     separator: "•",
     text: "font-semibold italic",
   },
+] as const
+
+const CARD_ACCENT = [
+  {
+    mark: "text-emerald-700 dark:text-emerald-300",
+    bar: "border-l-emerald-600/55 dark:border-l-emerald-400/55",
+  },
+  {
+    mark: "text-cyan-700 dark:text-cyan-300",
+    bar: "border-l-cyan-600/55 dark:border-l-cyan-400/55",
+  },
+  {
+    mark: "text-amber-700 dark:text-amber-600",
+    bar: "border-l-amber-600/55 dark:border-l-amber-400/50",
+  },
+] as const
+
+const CARD_OFFSET = [
+  "md:self-start",
+  "md:self-end",
+  "md:self-start md:ml-[8%]",
+] as const
+
+/** Small vertical travel, different per card, so the quotes stay readable. */
+const CARD_PARALLAX = [
+  [22, -14],
+  [12, -24],
+  [20, -12],
 ] as const
 
 function VelocityUnit({
@@ -135,6 +165,89 @@ function TutoringVelocity({ items }: { items: Review[] }) {
           </ScrollVelocityRow>
         )
       })}
+    </div>
+  )
+}
+
+function TestimonialCard({
+  review,
+  index,
+}: {
+  review: Review
+  index: number
+}) {
+  const reduced = useReducedMotion()
+  const ref = useRef<HTMLElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  })
+  const travel = CARD_PARALLAX[index] ?? CARD_PARALLAX[0]
+  const y = useTransform(scrollYProgress, [0, 1], [...travel])
+  const accent = CARD_ACCENT[index] ?? CARD_ACCENT[0]
+  const offset = CARD_OFFSET[index] ?? CARD_OFFSET[0]
+
+  const articleClass = cn(
+    "w-full max-w-2xl rounded-2xl border border-l-[3px] border-black/10 bg-card p-5 shadow-[inset_0_1px_0_rgba(255,255,255,1),0_10px_28px_-10px_rgba(0,0,0,.14),0_24px_48px_-20px_rgba(0,0,0,.1)] sm:p-6 md:p-7",
+    "dark:border-white/10 dark:shadow-none",
+    accent.bar
+  )
+
+  const body = (
+    <>
+      <Quote
+        aria-hidden
+        className={cn("mb-3 size-5 shrink-0 sm:size-6", accent.mark)}
+      />
+      <blockquote className="font-heading text-base leading-relaxed tracking-tight text-pretty sm:text-lg sm:leading-relaxed md:text-xl md:leading-relaxed">
+        &ldquo;{review.quote}&rdquo;
+      </blockquote>
+      <footer className="mt-4 flex flex-col gap-0.5 border-t border-black/8 pt-3 dark:border-white/10">
+        <cite className="font-heading text-sm font-medium not-italic">
+          {review.name}
+        </cite>
+        {review.context ? (
+          <p className="text-xs text-muted-foreground sm:text-sm">
+            {review.context}
+          </p>
+        ) : null}
+      </footer>
+    </>
+  )
+
+  if (reduced) {
+    return (
+      <article ref={ref} className={cn(articleClass, offset)}>
+        {body}
+      </article>
+    )
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.35 }}
+      transition={{
+        duration: 0.55,
+        ease: [0.22, 1, 0.36, 1],
+        delay: index * 0.07,
+      }}
+      className={cn("w-full max-w-2xl", offset)}
+    >
+      <motion.article ref={ref} style={{ y }} className={articleClass}>
+        {body}
+      </motion.article>
+    </motion.div>
+  )
+}
+
+function TutoringCards({ items }: { items: Review[] }) {
+  return (
+    <div className="mx-auto flex max-w-5xl flex-col gap-6 px-6 md:gap-7">
+      {items.map((review, index) => (
+        <TestimonialCard key={review.name} review={review} index={index} />
+      ))}
     </div>
   )
 }
@@ -224,9 +337,9 @@ function EndingTrack() {
 }
 
 /**
- * Tutoring heading and quotes sit in normal document flow. Quotes are
- * three big velocity rows (no pin, no extra scroll). The ending pin
- * is only the final "Let's build something" + footer settle.
+ * Tutoring heading and quotes sit in normal document flow. The default
+ * layout is staggered testimonial cards (no pin, no extra scroll). The
+ * ending pin is only the final "Let's build something" + footer settle.
  */
 export function Reviews() {
   const { heading, description } = siteConfig.reviews
@@ -241,8 +354,12 @@ export function Reviews() {
       <p className="mt-6 px-6 text-center font-mono text-[0.7rem] tracking-[0.2em] text-muted-foreground uppercase md:mt-8 md:text-xs">
         {TUTORING_PROOF}
       </p>
-      <div className="mt-10 md:mt-14">
-        <TutoringVelocity items={items} />
+      <div className="mt-8 md:mt-10">
+        {reviewsQuotesLayout === "velocity" ? (
+          <TutoringVelocity items={items} />
+        ) : (
+          <TutoringCards items={items} />
+        )}
       </div>
       <EndingTrack />
     </section>
