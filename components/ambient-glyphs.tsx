@@ -79,15 +79,6 @@ const GLYPHS: GlyphSpec[] = [
     tone: "pink",
   },
   {
-    text: "</>",
-    band: "near",
-    speed: 1.7,
-    dir: "fall",
-    rotate: [8, -12],
-    className: "top-[20%] right-[10%] hidden md:block",
-    tone: "cyan",
-  },
-  {
     text: "=>",
     band: "near",
     speed: 1.76,
