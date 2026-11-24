@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
+import { scrollToTarget } from "@/components/smooth-scroll"
 import { siteConfig } from "@/lib/site-config"
 
 const subscribe = () => () => {}
@@ -98,10 +99,11 @@ function DockLink({
             onClick={
               isHash
                 ? (event) => {
-                    const target = document.querySelector(href)
-                    if (!(target instanceof HTMLElement)) return
                     event.preventDefault()
-                    target.scrollIntoView({ behavior: "smooth" })
+                    scrollToTarget(href)
+                    if (window.location.hash !== href) {
+                      history.pushState(null, "", href)
+                    }
                   }
                 : undefined
             }

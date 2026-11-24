@@ -201,6 +201,8 @@
     }
   html {
     @apply font-sans;
+    /* Lenis owns smoothing; native CSS smooth would fight it. */
+    scroll-behavior: auto;
     }
   /* Keyboard skip link — off-screen until focused (WCAG 2.4.1) */
   .skip-link {
